@@ -78,9 +78,11 @@ export class App {
   }
 
   onBase64InputChange(value: string): void {
-    this.isPreviewLoading = true;
-    this.base64Input = value;
-    setTimeout(() => (this.isPreviewLoading = false), 100);
+    if (this.#isValidBase64(value)) {
+      this.isPreviewLoading = true;
+      this.base64Input = value;
+      setTimeout(() => (this.isPreviewLoading = false), 100);
+    }
   }
 
   #isValidBase64(str: string): boolean {
@@ -106,21 +108,7 @@ export class App {
       return;
     }
     try {
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'converted.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      this.#downloadPdfFromBase64(base64Data, 'converted_pdf');
     } catch {
       this.base64ToPdfError = 'Invalid Base64 string.';
     }
@@ -138,6 +126,47 @@ export class App {
     if (this.pdfObjectUrl) {
       URL.revokeObjectURL(this.pdfObjectUrl);
       this.pdfObjectUrl = null;
+    }
+  }
+
+  #downloadPdfFromBase64(base64String: string, fileName: string) {
+    const byteCharacters = atob(base64String);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    const base64FileType = this.#GetBase64DocumentType(base64String);
+
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: base64FileType.split('$')[0] });
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName + '.' + base64FileType.split('$')[1];
+    link.click();
+  }
+
+  #GetBase64DocumentType(base64String: string) {
+    const documentTypesToReturn: string[] = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif'];
+    const base64DocumentTypeChecks: string[] = ['JVBERi0', '/9j/', 'iVBORw0KGgo', 'R0lGODlh'];
+    const documentExtensions: string[] = ['pdf', 'jpeg', 'png', 'gif'];
+
+    const base64StringToCheckForPdf = base64String.substring(0, 7);
+    const base64StringToCheckForJpeg = base64String.substring(0, 4);
+    const base64StringToCheckForGif = base64String.substring(0, 8);
+    const base64StringToCheckForPng = base64String.substring(0, 11);
+
+    if (base64StringToCheckForPdf === base64DocumentTypeChecks[0]) {
+      return documentTypesToReturn[0] + "$" + documentExtensions[0];
+    } else if (base64StringToCheckForJpeg === base64DocumentTypeChecks[1]) {
+      return documentTypesToReturn[1] + "$" + documentExtensions[1];
+    } else if (base64StringToCheckForPng === base64DocumentTypeChecks[2]) {
+      return documentTypesToReturn[2] + "$" + documentExtensions[2];
+    } else if (base64StringToCheckForGif === base64DocumentTypeChecks[3]) {
+      return documentTypesToReturn[3] + "$" + documentExtensions[3];
+    } else {
+      return 'unknown';
     }
   }
 }
