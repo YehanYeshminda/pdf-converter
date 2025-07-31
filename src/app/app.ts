@@ -12,7 +12,6 @@ import { SafeUrlPipe } from './safe-url.pipe';
   styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('yydev-pdf-converter');
   showBase64Preview = false;
   copied = false;
   isLoading = false;
