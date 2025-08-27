@@ -5,6 +5,10 @@
     </div>
     <span class="spacer"></span>
 
+    <mat-slide-toggle class="theme-toggle" [checked]="isDark" (change)="toggleTheme()" matTooltip="Toggle dark mode">
+        <mat-icon>{{ isDark ? 'dark_mode' : 'light_mode' }}</mat-icon>
+    </mat-slide-toggle>
+
     <button mat-icon-button aria-label="About" class="icon-btn" matTooltip="Built with ❤️ by YYDev.">
         <mat-icon>info</mat-icon>
     </button>

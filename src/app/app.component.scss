@@ -1,8 +1,6 @@
-/* Layout */
 :host {
     display: block;
     min-height: 100vh;
-    background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
 }
 
 .top-toolbar {
@@ -46,6 +44,7 @@
     box-shadow: 0 10px 30px rgba(26, 36, 62, 0.08);
 }
 
+
 .card-header h1 {
     margin: 0 0 6px 0;
     font-size: 1.6rem;
@@ -72,7 +71,8 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
-/* Responsive tweaks */
+
+
 @media (max-width: 600px) {
     .main-card {
         margin: 0 6px;

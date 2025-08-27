@@ -10,12 +10,44 @@ html {
 }
 
 body {
-  color-scheme: light;
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
   margin: 0;
 }
+
+:root.dark-mode {
+  --app-bg: #0b1020;
+  --card-bg: #0f1724;
+  --muted: rgba(255, 255, 255, 0.7);
+
+  body {
+    background-color: var(--app-bg);
+    color: var(--muted);
+  }
+
+  .subtitle {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .main-card {
+    background: linear-gradient(180deg, #0f1724 0%, #0b1220 100%);
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.6);
+  }
+
+  .card-footer {
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .file-name {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .drop-zone {
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
 
 @import "tailwindcss";
 
