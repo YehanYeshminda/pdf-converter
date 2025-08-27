@@ -1,0 +1,71 @@
+<mat-card class="converter-card">
+    <mat-card-header>
+        <mat-card-title>Image ↔ Base64 Converter</mat-card-title>
+        <mat-card-subtitle>Convert images to/from Base64 locally</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="pdf-converter">
+            <mat-button-toggle-group name="mode" aria-label="Conversion mode" [(ngModel)]="mode" (change)="onModeChange(mode)">
+                <mat-button-toggle value="img2b64">Image → Base64</mat-button-toggle>
+                <mat-button-toggle value="b642img">Base64 → Image</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div *ngIf="mode === 'img2b64'" class="panel">
+                <div class="drop-zone" [class.dragover]="dragOver" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+                    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" (click)="$event.stopPropagation()" />
+                    <div class="drop-content">
+                        <mat-icon>image</mat-icon>
+                        <div>
+                            <div class="drop-title">Drop image here or click to browse</div>
+                            <div class="file-name">{{ selectedFile?.name || 'No file chosen' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <mat-radio-group aria-label="Output type" [(ngModel)]="outputType">
+                        <mat-radio-button value="trimmed">Base64 (trimmed)</mat-radio-button>
+                        <mat-radio-button value="raw">Base64 (data URL)</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div class="actions">
+                    <button mat-flat-button color="primary" (click)="convertImageToBase64()" [disabled]="!selectedFile || loading">Convert</button>
+                    <button mat-stroked-button color="accent" (click)="downloadBase64AsFile('image.b64')" [disabled]="!outputBase64">Download</button>
+                    <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard()" [disabled]="!outputBase64"><mat-icon>content_copy</mat-icon></button>
+                </div>
+
+                <mat-progress-bar *ngIf="loading" mode="indeterminate" class="my-2"></mat-progress-bar>
+
+                <mat-form-field class="output-field">
+                    <mat-label>Base64 output</mat-label>
+                    <textarea matInput rows="6" [(ngModel)]="outputBase64"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="mode === 'b642img'" class="panel">
+                <mat-form-field class="input-field">
+                    <mat-label>Paste base64 (data URL or raw)</mat-label>
+                    <textarea matInput rows="6" [(ngModel)]="inputBase64"></textarea>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Filename for download</mat-label>
+                    <input matInput [(ngModel)]="filenameForDownload" placeholder="converted.png" />
+                </mat-form-field>
+
+                <div class="actions">
+                    <button mat-flat-button color="primary" (click)="convertBase64ToImage()" [disabled]="!inputBase64">Convert</button>
+                    <!-- <button mat-stroked-button color="accent" (click)="downloadPreviewImage()" [disabled]="!previewUrl">Download</button> -->
+                    <button mat-stroked-button (click)="openPreviewInNewTab()" [disabled]="!previewUrl">Open Preview</button>
+                </div>
+
+                <div class="preview" *ngIf="previewUrl">
+                    <div class="preview-toolbar"><small>Preview</small></div>
+                    <img [src]="previewUrl | safeUrl" alt="preview" />
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

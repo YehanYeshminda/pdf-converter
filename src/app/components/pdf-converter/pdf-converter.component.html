@@ -1,0 +1,83 @@
+<mat-card class="converter-card">
+    <mat-card-header>
+        <mat-card-title>PDF ↔ Base64 Converter</mat-card-title>
+        <mat-card-subtitle>Fast local conversions — files never leave your browser</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="pdf-converter">
+            <mat-button-toggle-group name="mode" aria-label="Conversion mode" [(ngModel)]="mode" (change)="onModeChange(mode)">
+                <mat-button-toggle value="pdf2b64">PDF → Base64</mat-button-toggle>
+                <mat-button-toggle value="b642pdf">Base64 → PDF</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div *ngIf="mode === 'pdf2b64'" class="panel">
+                <div class="drop-zone" [class.dragover]="dragOver" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+                    <input #fileInput type="file" accept="application/pdf" (change)="onFileSelected($event)" (click)="$event.stopPropagation()" />
+                    <div class="drop-content">
+                        <mat-icon>upload_file</mat-icon>
+                        <div>
+                            <div class="drop-title">Drop PDF here or click to browse</div>
+                            <div class="file-name">
+                                {{ (selectedFile && selectedFile.name) || 'No file chosen' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <mat-radio-group aria-label="Output type" [(ngModel)]="outputType">
+                        <mat-radio-button value="trimmed">Base64 (trimmed)</mat-radio-button>
+                        <mat-radio-button value="raw">Base64 (data URL)</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div class="actions">
+                    <button mat-flat-button color="primary" (click)="convertPdfToBase64()" [disabled]="!selectedFile || loading">
+                        <mat-icon>autorenew</mat-icon>
+                        Convert
+                    </button>
+                    <button mat-stroked-button color="accent" (click)="downloadBase64AsFile('converted.txt')" [disabled]="!outputBase64">
+                        <mat-icon>download</mat-icon>
+                        Download
+                    </button>
+                    <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard()" [disabled]="!outputBase64">
+                        <mat-icon>content_copy</mat-icon>
+                    </button>
+                </div>
+
+                <mat-progress-bar *ngIf="loading" class="my-2" mode="indeterminate"></mat-progress-bar>
+
+                <mat-form-field class="output-field">
+                    <mat-label>Base64 output</mat-label>
+                    <textarea matInput rows="6" [(ngModel)]="outputBase64"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="mode === 'b642pdf'" class="panel">
+                <mat-form-field class="input-field">
+                    <mat-label>Paste base64 (data URL or raw)</mat-label>
+                    <textarea matInput rows="8" [(ngModel)]="inputBase64"></textarea>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Filename for download</mat-label>
+                    <input matInput [(ngModel)]="filenameForDownload" placeholder="converted.pdf" />
+                </mat-form-field>
+
+                <div class="actions">
+                    <button mat-flat-button color="primary" (click)="convertBase64ToPdf()" [disabled]="!inputBase64">Convert</button>
+                    <button mat-stroked-button color="accent" (click)="downloadPreviewPdf()" [disabled]="!previewUrl">Download</button>
+                    <button mat-stroked-button (click)="openPreviewInNewTab()" [disabled]="!previewUrl">Open Preview</button>
+                </div>
+
+                <div class="preview" *ngIf="previewUrl">
+                    <div class="preview-toolbar">
+                        <small>Preview</small>
+                    </div>
+                    <iframe width="100%" height="500px" [src]="previewUrl | safeUrl" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

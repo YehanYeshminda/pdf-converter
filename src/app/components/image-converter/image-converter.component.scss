@@ -1,0 +1,75 @@
+.pdf-converter {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 10px;
+}
+
+.drop-zone {
+    border: 2px dashed rgba(0, 0, 0, 1);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.drop-zone.dragover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-color: rgba(25, 118, 210, 1);
+}
+
+.drop-content {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.drop-content mat-icon {
+    font-size: 40px;
+    color: rgba(25, 118, 210, 0.9);
+}
+
+.drop-title {
+    font-weight: 600;
+}
+
+.file-name {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.95rem;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.output-field,
+.input-field {
+    width: 100%;
+    padding-top: 10px;
+}
+
+.preview {
+    margin-top: 12px;
+}
+
+.preview img {
+    max-width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+}
+
+@media (max-width:600px) {
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.options {
+    margin-top: 6px;
+}

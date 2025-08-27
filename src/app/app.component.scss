@@ -1,0 +1,85 @@
+/* Layout */
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
+}
+
+.top-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-icon {
+    margin-right: 8px;
+}
+
+.brand-title {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.main-card {
+    width: 100%;
+    max-width: 980px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(26, 36, 62, 0.08);
+}
+
+.card-header h1 {
+    margin: 0 0 6px 0;
+    font-size: 1.6rem;
+}
+
+.subtitle {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.tabs {
+    margin-top: 18px;
+}
+
+.tab-content {
+    padding: 18px 6px 6px 6px;
+}
+
+.card-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .main-card {
+        margin: 0 6px;
+        padding: 14px;
+    }
+
+    .card-header h1 {
+        font-size: 1.25rem;
+    }
+}
