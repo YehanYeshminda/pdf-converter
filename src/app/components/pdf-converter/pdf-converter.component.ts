@@ -29,7 +29,7 @@ import { SafeUrlPipe } from '../../safe-url.pipe';
     MatProgressBarModule,
     MatTooltipModule,
     MatSnackBarModule,
-    SafeUrlPipe,
+    SafeUrlPipe
   ],
   templateUrl: './pdf-converter.component.html',
   styleUrls: ['./pdf-converter.component.scss']

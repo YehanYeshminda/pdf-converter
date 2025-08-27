@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { PdfConverter } from './components/pdf-converter/pdf-converter.component';
 import { ImageConverter } from './components/image-converter/image-converter.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -23,6 +24,7 @@ import { ImageConverter } from './components/image-converter/image-converter.com
     MatButtonModule,
     PdfConverter,
     ImageConverter,
+    MatTooltipModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
