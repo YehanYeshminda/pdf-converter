@@ -27,4 +27,10 @@ import { ImageConverter } from './components/image-converter/image-converter.com
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class App { }
+export class App {
+  onChangeTab: boolean = false;
+
+  onTabChange(event: any) {
+    this.onChangeTab = !this.onChangeTab;
+  }
+}

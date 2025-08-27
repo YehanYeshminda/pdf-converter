@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +34,9 @@ import { SafeUrlPipe } from '../../safe-url.pipe';
   templateUrl: './pdf-converter.component.html',
   styleUrls: ['./pdf-converter.component.scss']
 })
-export class PdfConverter implements OnInit {
+export class PdfConverter implements OnInit, OnChanges {
+  @Input() onTabChange: boolean = false;
+
   mode: 'pdf2b64' | 'b642pdf' = 'pdf2b64';
   outputType: 'trimmed' | 'raw' = 'trimmed';
 
@@ -57,6 +59,15 @@ export class PdfConverter implements OnInit {
     this.inputBase64 = '';
     this.selectedFile = undefined;
     this.previewUrl = null;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["onTabChange"] && !changes["onTabChange"].firstChange) {
+      this.outputBase64 = '';
+      this.inputBase64 = '';
+      this.selectedFile = undefined;
+      this.previewUrl = null;
+    }
   }
 
   onModeChange(value: 'pdf2b64' | 'b642pdf') {

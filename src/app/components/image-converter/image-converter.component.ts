@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +35,9 @@ import { SafeUrlPipe } from '../../safe-url.pipe';
   templateUrl: './image-converter.component.html',
   styleUrls: ['./image-converter.component.scss']
 })
-export class ImageConverter implements OnDestroy, OnInit {
+export class ImageConverter implements OnDestroy, OnInit, OnChanges {
+  @Input() onTabChange: boolean = false;
+
   mode: 'img2b64' | 'b642img' = 'img2b64';
   outputType: 'trimmed' | 'raw' = 'trimmed';
 
@@ -59,6 +61,16 @@ export class ImageConverter implements OnDestroy, OnInit {
     this.inputBase64 = '';
     this.selectedFile = undefined;
     this.clearPreview();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["onTabChange"] && !changes["onTabChange"].firstChange) {
+      this.clearPreview();
+      this.outputBase64 = '';
+      this.inputBase64 = '';
+      this.selectedFile = undefined;
+      this.clearPreview();
+    }
   }
 
   onModeChange(value: 'img2b64' | 'b642img') {

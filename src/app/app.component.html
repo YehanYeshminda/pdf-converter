@@ -1,47 +1,37 @@
 <mat-toolbar color="primary" class="top-toolbar" role="banner">
-  <div class="brand">
-    <mat-icon class="brand-icon">picture_as_pdf</mat-icon>
-    <span class="brand-title">File Converter</span>
-  </div>
-  <span class="spacer"></span>
-  <button mat-icon-button aria-label="About" class="icon-btn">
-    <mat-icon>info</mat-icon>
-  </button>
+    <div class="brand">
+        <mat-icon class="brand-icon">picture_as_pdf</mat-icon>
+        <span class="brand-title">File Converter</span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button aria-label="About" class="icon-btn">
+        <mat-icon>info</mat-icon>
+    </button>
 </mat-toolbar>
 
 <div class="container">
-  <mat-card class="main-card">
-    <div class="card-header">
-      <h1>Convert PDFs & Images</h1>
-      <p class="subtitle">
-        Fast, local, and privacy-first. Choose a tab and follow the simple steps
-        to convert files.
-      </p>
-    </div>
-
-    <mat-tab-group
-      mat-stretch-tabs="false"
-      mat-align-tabs="center"
-      class="tabs"
-    >
-      <mat-tab label="PDF">
-        <div class="tab-content">
-          <app-pdf-converter></app-pdf-converter>
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>Convert PDFs & Images</h1>
+            <p class="subtitle">Fast, local, and privacy-first. Choose a tab and follow the simple steps to convert files.</p>
         </div>
-      </mat-tab>
-      <mat-tab label="Image">
-        <div class="tab-content">
-          <app-image-converter></app-image-converter>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
 
-    <mat-divider></mat-divider>
-    <div class="card-footer">
-      <small
-        >Tip: For large files, conversion may take longer — progress will show
-        inside each converter.</small
-      >
-    </div>
-  </mat-card>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" class="tabs" (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="PDF">
+                <div class="tab-content">
+                    <app-pdf-converter [onTabChange]="onChangeTab"></app-pdf-converter>
+                </div>
+            </mat-tab>
+            <mat-tab label="Image">
+                <div class="tab-content">
+                    <app-image-converter [onTabChange]="onChangeTab"></app-image-converter>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <mat-divider></mat-divider>
+        <div class="card-footer">
+            <small>Tip: For large files, conversion may take longer — progress will show inside each converter.</small>
+        </div>
+    </mat-card>
 </div>
