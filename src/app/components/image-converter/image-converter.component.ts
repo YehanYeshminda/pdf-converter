@@ -54,6 +54,7 @@ export class ImageConverter implements OnDestroy, OnInit {
   constructor(private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.mode = 'img2b64';
     this.outputBase64 = '';
     this.inputBase64 = '';
     this.selectedFile = undefined;

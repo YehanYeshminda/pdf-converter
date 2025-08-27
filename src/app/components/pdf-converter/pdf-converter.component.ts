@@ -52,6 +52,7 @@ export class PdfConverter implements OnInit {
   constructor(private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.mode = 'pdf2b64';
     this.outputBase64 = '';
     this.inputBase64 = '';
     this.selectedFile = undefined;
