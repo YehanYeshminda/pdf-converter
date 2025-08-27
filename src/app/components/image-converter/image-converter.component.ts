@@ -142,7 +142,6 @@ export class ImageConverter implements OnDestroy, OnInit {
     }
 
     try {
-      // Use fetch on the data URL — browsers optimize this and avoid heavy atob work
       const res = await fetch(dataUrl);
       if (!res.ok) throw new Error('Failed to decode image');
       const blob = await res.blob();

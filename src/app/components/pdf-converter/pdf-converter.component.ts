@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +34,7 @@ import { SafeUrlPipe } from '../../safe-url.pipe';
   templateUrl: './pdf-converter.component.html',
   styleUrls: ['./pdf-converter.component.scss']
 })
-export class PdfConverter {
+export class PdfConverter implements OnInit {
   mode: 'pdf2b64' | 'b642pdf' = 'pdf2b64';
   outputType: 'trimmed' | 'raw' = 'trimmed';
 
@@ -50,6 +50,13 @@ export class PdfConverter {
   private lastBlob: Blob | null = null;
 
   constructor(private snackBar: MatSnackBar) { }
+
+  ngOnInit(): void {
+    this.outputBase64 = '';
+    this.inputBase64 = '';
+    this.selectedFile = undefined;
+    this.previewUrl = null;
+  }
 
   onModeChange(value: 'pdf2b64' | 'b642pdf') {
     this.mode = value;
