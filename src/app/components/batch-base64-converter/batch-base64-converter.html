@@ -1,0 +1,71 @@
+<mat-card class="converter-card">
+    <mat-card-header>
+        <mat-card-title>Batch Base64 Converter</mat-card-title>
+        <mat-card-subtitle>Convert up to {{ maxItems }} files at once</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="controls">
+            <mat-button-toggle-group [(ngModel)]="mode" (change)="onModeChange(mode)">
+                <mat-button-toggle value="image">Images</mat-button-toggle>
+                <mat-button-toggle value="pdf">PDFs</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+
+        <div class="drop-zone" [class.dragover]="dragOver" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+            <input #fileInput type="file" [accept]="mode === 'image' ? 'image/*' : 'application/pdf'" (change)="onFileSelected($event)" multiple />
+            <div class="drop-content">
+                <mat-icon>upload_file</mat-icon>
+                <div>
+                    <div class="drop-title">Drop {{ mode === 'image' ? 'images' : 'pdfs' }} here or click to browse</div>
+                    <div class="drop-sub">Only {{ maxItems }} files per batch. Each will be converted to Base64.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="batch-controls" *ngIf="items.length">
+            <div class="summary">
+                <mat-icon>folder</mat-icon>
+                <span>{{ items.length }} {{ items.length === 1 ? 'file' : 'files' }} selected</span>
+            </div>
+            <div class="actions">
+                <button mat-stroked-button color="warn" (click)="clearAll()"><mat-icon>delete_sweep</mat-icon> Clear All</button>
+                <!-- <button mat-raised-button color="primary" (click)="processAll()"><mat-icon>transform</mat-icon> Process All</button> -->
+            </div>
+        </div>
+
+        <mat-divider *ngIf="items.length"></mat-divider>
+
+        <div class="items" *ngIf="items.length">
+            <mat-card class="item" *ngFor="let it of items; let i = index">
+                <div class="item-main">
+                    <mat-icon *ngIf="mode === 'image'">image</mat-icon>
+                    <mat-icon *ngIf="mode === 'pdf'">picture_as_pdf</mat-icon>
+                    <div class="meta">
+                        <div class="title">{{ it.name }}</div>
+                        <div class="sub">{{ it.type }}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button mat-icon-button (click)="downloadFileFromBase64(it)" matTooltip="Download file">
+                            <mat-icon>download</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="downloadBase64(it)" matTooltip="Download base64">
+                            <mat-icon>file_download</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="copy(it)" matTooltip="Copy base64">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="remove(i)" matTooltip="Remove">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="preview" *ngIf="it.previewUrl && mode === 'image'">
+                    <img [src]="it.previewUrl | safeUrl" alt="preview" />
+                </div>
+            </mat-card>
+        </div>
+
+        <div *ngIf="!items.length" class="empty">No files yet — drop or click to add.</div>
+    </mat-card-content>
+</mat-card>

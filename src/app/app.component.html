@@ -17,19 +17,31 @@
 <div class="container">
     <mat-card class="main-card">
         <div class="card-header">
-            <h1>Convert PDFs & Images</h1>
-            <p class="subtitle">Fast, local, and privacy-first. Choose a tab and follow the simple steps to convert files.</p>
+            <h1>File Converter - PDFs, Images & Base64</h1>
+            <p class="subtitle">Fast, local, and privacy-first file conversion tools. Choose a converter below to get started.</p>
         </div>
 
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" class="tabs" (selectedTabChange)="onTabChange($event)">
             <mat-tab label="PDF">
                 <div class="tab-content">
+                    <h2>PDF Converter</h2>
+                    <p>Convert PDF files to images or vice versa with our secure, client-side converter.</p>
                     <app-pdf-converter [onTabChange]="onChangeTab"></app-pdf-converter>
                 </div>
             </mat-tab>
             <mat-tab label="Image">
                 <div class="tab-content">
+                    <h2>Image Converter</h2>
+                    <p>Transform images between different formats or convert them to PDF documents.</p>
                     <app-image-converter [onTabChange]="onChangeTab"></app-image-converter>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Batch Base64 Converter">
+                <div class="tab-content">
+                    <h2>Batch Base64 Converter</h2>
+                    <p>Encode multiple files to Base64 or decode Base64 strings back to files in batch.</p>
+                    <app-batch-base64-converter></app-batch-base64-converter>
                 </div>
             </mat-tab>
         </mat-tab-group>
