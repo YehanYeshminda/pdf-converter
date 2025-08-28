@@ -1,0 +1,68 @@
+<mat-card class="compress-card">
+    <mat-card-header>
+        <mat-card-title>Image Compression Tool</mat-card-title>
+        <mat-card-subtitle>Compress images with quality control</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="compression-settings">
+            <div class="settings-row">
+                <div class="setting">
+                    <label>Quality: {{ quality }}%</label>
+                    <mat-slider min="1" max="100" step="1" discrete (change)="onQualityChange($event)">
+                        <input matSliderThumb [(ngModel)]="quality" />
+                    </mat-slider>
+                </div>
+                <div class="setting">
+                    <label>Max Size: {{ maxSize }}px</label>
+                    <mat-slider min="100" max="3000" step="100" discrete (change)="onMaxSizeChange($event)">
+                        <input matSliderThumb [(ngModel)]="maxSize" />
+                    </mat-slider>
+                </div>
+            </div>
+            <p class="settings-info">Lower quality = smaller file size. Max size controls the largest dimension.</p>
+        </div>
+
+        <div class="drop-zone" [class.dragover]="dragOver" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+            <input #fileInput type="file" accept="image/*" multiple (change)="onFileSelected($event)" />
+            <div class="drop-content">
+                <mat-icon>image</mat-icon>
+                <div>
+                    <div class="drop-title">Drop images here or click to browse</div>
+                    <div class="drop-subtitle">JPG, PNG, GIF, WebP and other image formats supported</div>
+                </div>
+            </div>
+        </div>
+
+        <mat-progress-bar *ngIf="loading" mode="indeterminate" class="progress-bar"></mat-progress-bar>
+
+        <div *ngIf="uploadedImages.length > 0" class="results">
+            <h3>Compression Results</h3>
+
+            <div class="image-grid">
+                <mat-card *ngFor="let image of uploadedImages; let i = index" class="image-card">
+                    <div class="image-comparison">
+                        <div class="image-preview">
+                            <div class="preview-header">Original</div>
+                            <img [src]="image.originalUrl | safeUrl" alt="Original" />
+                            <div class="preview-info">{{ formatBytes(image.originalSize) }}</div>
+                        </div>
+                        <div class="compression-arrow">
+                            <mat-icon>arrow_forward</mat-icon>
+                            <div class="savings">{{ calculateSavings(image.originalSize, image.compressedSize) }}</div>
+                        </div>
+                        <div class="image-preview">
+                            <div class="preview-header">Compressed</div>
+                            <img [src]="image.compressedUrl | safeUrl" alt="Compressed" />
+                            <div class="preview-info">{{ formatBytes(image.compressedSize) }}</div>
+                        </div>
+                    </div>
+                    <mat-card-actions>
+                        <button mat-button (click)="downloadImage(image.compressedUrl, 'compressed-' + image.name)" color="primary"><mat-icon>download</mat-icon> Download</button>
+                        <button mat-button (click)="removeImage(i)" color="warn"><mat-icon>delete</mat-icon> Remove</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

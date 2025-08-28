@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ThemeService } from './theme.service';
 import { BatchBase64Converter } from './components/batch-base64-converter/batch-base64-converter';
 import { Title, Meta } from '@angular/platform-browser';
+import { ImageCompress } from "./components/image-compress/image-compress.component";
 
 
 @Component({
@@ -30,7 +31,8 @@ import { Title, Meta } from '@angular/platform-browser';
     PdfConverter,
     ImageConverter,
     MatTooltipModule,
-    BatchBase64Converter
+    BatchBase64Converter,
+    ImageCompress
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
