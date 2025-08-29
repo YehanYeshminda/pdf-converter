@@ -41,6 +41,25 @@
     .actions {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
+    }
+
+    .pdf-converter {
+        gap: 8px;
+    }
+
+    mat-button-toggle-group {
+        width: 100%;
+        display: flex;
+    }
+
+    .mat-button-toggle {
+        flex: 1;
+    }
+
+    .mat-radio-button {
+        display: block;
+        margin-bottom: 8px;
     }
 }
 
@@ -48,6 +67,7 @@
     border-radius: 10px;
     margin-top: 10px;
     box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+    max-width: 100%;
 }
 
 .drop-zone {
@@ -74,14 +94,18 @@
 .drop-content mat-icon {
     font-size: 40px;
     color: rgba(25, 118, 210, 0.9);
+}
 
-    .drop-zone input[type="file"] {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
-        pointer-events: none;
-    }
+.drop-zone input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.drop-text {
+    width: 100%;
 }
 
 .drop-title {
@@ -97,9 +121,63 @@
     margin-bottom: 10px;
 }
 
+.responsive-title {
+    font-size: 1.25rem;
+}
+
+.preview-iframe {
+    max-width: 100%;
+}
+
+@media (max-width: 480px) {
+    .converter-card {
+        padding: 12px 8px;
+    }
+
+    .responsive-title {
+        font-size: 1.1rem;
+    }
+
+    .actions button {
+        width: 100%;
+        margin: 4px 0;
+    }
+
+    mat-card-subtitle {
+        font-size: 0.8rem;
+    }
+}
+
 @media (max-width: 600px) {
     .drop-content {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .file-name {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        word-break: break-all;
+        max-width: 100%;
+    }
+
+    .drop-zone {
+        padding: 24px 16px;
+        min-height: 80px;
+        justify-content: center;
+    }
+
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .preview iframe {
+        height: 350px;
+    }
+
+    .panel {
+        padding: 0;
     }
 }

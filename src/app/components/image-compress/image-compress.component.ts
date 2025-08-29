@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +48,7 @@ export class ImageCompress implements OnInit, OnDestroy {
   quality: number = 75;
   maxSize: number = 800;
   loading: boolean = false;
+  isMobileView: boolean = false;
   dragOver: boolean = false;
   uploadedImages: CompressedImage[] = [];
 
@@ -60,6 +61,16 @@ export class ImageCompress implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 600;
   }
 
   onQualityChange(event: any): void {

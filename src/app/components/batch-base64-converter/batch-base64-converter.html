@@ -1,12 +1,12 @@
 <mat-card class="converter-card">
     <mat-card-header>
-        <mat-card-title>Batch Base64 Converter</mat-card-title>
+        <mat-card-title class="responsive-title">Batch Base64 Converter</mat-card-title>
         <mat-card-subtitle>Convert up to {{ maxItems }} files at once</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
         <div class="controls">
-            <mat-button-toggle-group [(ngModel)]="mode" (change)="onModeChange(mode)">
+            <mat-button-toggle-group [(ngModel)]="mode" (change)="onModeChange(mode)" class="toggle-group">
                 <mat-button-toggle value="image">Images</mat-button-toggle>
                 <mat-button-toggle value="pdf">PDFs</mat-button-toggle>
             </mat-button-toggle-group>
@@ -16,8 +16,8 @@
             <input #fileInput type="file" [accept]="mode === 'image' ? 'image/*' : 'application/pdf'" (change)="onFileSelected($event)" multiple />
             <div class="drop-content">
                 <mat-icon>upload_file</mat-icon>
-                <div>
-                    <div class="drop-title">Drop {{ mode === 'image' ? 'images' : 'pdfs' }} here or click to browse</div>
+                <div class="drop-text">
+                    <div class="drop-title">{{ isMobileView ? 'Tap to select ' + (mode === 'image' ? 'images' : 'PDFs') : 'Drop ' + (mode === 'image' ? 'images' : 'PDFs') + ' here or click to browse' }}</div>
                     <div class="drop-sub">Only {{ maxItems }} files per batch. Each will be converted to Base64.</div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                 <span>{{ items.length }} {{ items.length === 1 ? 'file' : 'files' }} selected</span>
             </div>
             <div class="actions">
-                <button mat-stroked-button color="warn" (click)="clearAll()"><mat-icon>delete_sweep</mat-icon> Clear All</button>
+                <button mat-stroked-button color="warn" (click)="clearAll()" class="action-button"><mat-icon>delete_sweep</mat-icon> Clear All</button>
                 <!-- <button mat-raised-button color="primary" (click)="processAll()"><mat-icon>transform</mat-icon> Process All</button> -->
             </div>
         </div>

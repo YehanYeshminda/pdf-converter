@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -43,7 +43,7 @@ interface OutputItem {
   templateUrl: './batch-base64-converter.html',
   styleUrls: ['./batch-base64-converter.scss']
 })
-export class BatchBase64Converter implements OnDestroy {
+export class BatchBase64Converter implements OnDestroy, OnInit {
   mode: 'image' | 'pdf' = 'image';
   outputType: 'trimmed' | 'raw' = 'trimmed';
 
@@ -51,8 +51,22 @@ export class BatchBase64Converter implements OnDestroy {
   maxItems = 5;
 
   dragOver = false;
+  isMobileView = false;
 
   constructor(private snackBar: MatSnackBar) { }
+
+  ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 600;
+  }
 
   onModeChange(mode: 'image' | 'pdf') {
     this.mode = mode;

@@ -1,5 +1,8 @@
 .compress-card {
+    border-radius: 10px;
     margin-top: 10px;
+    box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+    max-width: 100%;
 }
 
 .compression-settings {
@@ -58,6 +61,10 @@
     gap: 16px;
     align-items: center;
     text-align: center;
+}
+
+.drop-text {
+    width: 100%;
 }
 
 .drop-content mat-icon {
@@ -130,6 +137,12 @@
         object-fit: contain;
         margin: 8px 0;
     }
+
+    .preview-img {
+        transition: transform 0.2s;
+        display: block;
+        margin: 0 auto;
+    }
 }
 
 .preview-header {
@@ -160,10 +173,47 @@
     }
 }
 
-mat-card-actions {
+mat-card-actions,
+.card-actions {
     display: flex;
     justify-content: space-between;
     padding: 8px 16px 16px;
+}
+
+.action-button {
+    flex: 1;
+    margin: 0 4px;
+}
+
+.responsive-title {
+    font-size: 1.25rem;
+}
+
+@media (max-width: 480px) {
+    .compress-card {
+        padding: 12px 8px;
+    }
+
+    .responsive-title {
+        font-size: 1.1rem;
+    }
+
+    mat-card-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .image-preview img {
+        max-height: 150px;
+    }
+
+    .compression-settings {
+        padding: 12px 8px;
+    }
+
+    .results h3 {
+        font-size: 1.1rem;
+        text-align: center;
+    }
 }
 
 @media (max-width: 600px) {
@@ -178,5 +228,49 @@ mat-card-actions {
     .compression-arrow {
         transform: rotate(90deg);
         margin: 12px 0;
+    }
+
+    .drop-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .drop-zone {
+        padding: 24px 16px;
+        min-height: 80px;
+        justify-content: center;
+    }
+
+    .drop-title {
+        font-size: 16px;
+    }
+
+    .drop-subtitle {
+        font-size: 13px;
+    }
+
+    .settings-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .setting {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .mat-form-field {
+        width: 100%;
+    }
+
+    mat-card-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    mat-card-actions button {
+        width: 100%;
     }
 }

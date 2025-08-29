@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -49,6 +49,7 @@ export class PdfConverter implements OnInit, OnChanges {
   loading = false;
   dragOver = false;
   previewUrl: string | null = null;
+  isMobileView = false;
   private lastBlob: Blob | null = null;
 
   constructor(private snackBar: MatSnackBar) { }
@@ -59,6 +60,16 @@ export class PdfConverter implements OnInit, OnChanges {
     this.inputBase64 = '';
     this.selectedFile = undefined;
     this.previewUrl = null;
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 600;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

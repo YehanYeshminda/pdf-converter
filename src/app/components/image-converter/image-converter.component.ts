@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -19,7 +19,6 @@ import { SafeUrlPipe } from '../../safe-url.pipe';
   imports: [
     CommonModule,
     FormsModule,
-    NgIf,
     MatButtonModule,
     MatButtonToggleModule,
     MatRadioModule,
@@ -49,6 +48,7 @@ export class ImageConverter implements OnDestroy, OnInit, OnChanges {
 
   loading = false;
   dragOver = false;
+  isMobileView = false;
 
   previewUrl: string | null = null;
   private lastBlob: Blob | null = null;
@@ -61,6 +61,16 @@ export class ImageConverter implements OnDestroy, OnInit, OnChanges {
     this.inputBase64 = '';
     this.selectedFile = undefined;
     this.clearPreview();
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 600;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,6 +1,6 @@
 <mat-card class="converter-card">
     <mat-card-header>
-        <mat-card-title>Image ↔ Base64 Converter</mat-card-title>
+        <mat-card-title class="responsive-title">Image ↔ Base64 Converter</mat-card-title>
         <mat-card-subtitle>Convert images to/from Base64 locally</mat-card-subtitle>
     </mat-card-header>
 
@@ -16,8 +16,8 @@
                     <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" (click)="$event.stopPropagation()" />
                     <div class="drop-content">
                         <mat-icon>image</mat-icon>
-                        <div>
-                            <div class="drop-title">Drop image here or click to browse</div>
+                        <div class="drop-text">
+                            <div class="drop-title">{{ isMobileView ? 'Tap to select image' : 'Drop image here or click to browse' }}</div>
                             <div class="file-name">{{ selectedFile?.name || 'No file chosen' }}</div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
 
                 <div class="preview" *ngIf="previewUrl">
                     <div class="preview-toolbar"><small>Preview</small></div>
-                    <img [src]="previewUrl | safeUrl" alt="preview" />
+                    <img [src]="previewUrl | safeUrl" alt="preview" class="preview-image" />
                 </div>
             </div>
         </div>
