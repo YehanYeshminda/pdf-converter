@@ -66,7 +66,43 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.9rem;
+    min-width: 60px;
+}
 
+.visitor-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    margin-right: 4px;
+}
+
+.loading-count {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
 
 @media (max-width: 600px) {
     .main-card {
@@ -76,5 +112,17 @@
 
     .card-header h1 {
         font-size: 1.25rem;
+    }
+
+    .visitor-counter {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        margin-right: 8px;
+    }
+
+    .visitor-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
     }
 }

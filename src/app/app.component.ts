@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,12 +16,15 @@ import { ThemeService } from './theme.service';
 import { BatchBase64Converter } from './components/batch-base64-converter/batch-base64-converter';
 import { Title, Meta } from '@angular/platform-browser';
 import { ImageCompress } from "./components/image-compress/image-compress.component";
+import { VisitorCounterService } from './services/visitor-counter.service';
 
 
 @Component({
   selector: 'app-root',
   imports: [
     FormsModule,
+    CommonModule,
+    DecimalPipe,
     MatTabsModule,
     MatToolbarModule,
     MatIconModule,
@@ -40,13 +44,40 @@ import { ImageCompress } from "./components/image-compress/image-compress.compon
 export class App implements OnInit {
   onChangeTab: boolean = false;
   isDark = false;
+  visitorCount: number = 0;
 
-  constructor(private theme: ThemeService, private title: Title, private meta: Meta) { }
+  constructor(
+    private theme: ThemeService,
+    private title: Title,
+    private meta: Meta,
+    private visitorCounter: VisitorCounterService
+  ) { }
 
   ngOnInit(): void {
     this.isDark = this.theme.isDark();
     this.theme.applyClass(this.isDark);
     this.setDefaultSEO();
+    this.fetchVisitorCount();
+    this.updateCounter();
+  }
+
+  private fetchVisitorCount(): void {
+    this.visitorCount = -1;
+
+    this.visitorCounter.getCounter().subscribe({
+      next: (count) => {
+        if (count.code && count.code !== "200") {
+          this.visitorCount = 0;
+          return;
+        } else {
+          this.visitorCount = count.data.up_count || 0;
+        }
+      },
+    });
+  }
+
+  private updateCounter(): void {
+    this.visitorCounter.upCounter().subscribe();
   }
 
   toggleTheme() {
@@ -66,15 +97,15 @@ export class App implements OnInit {
 
   private updateSEOForTab(tabIndex: number) {
     switch (tabIndex) {
-      case 0: // PDF tab
+      case 0:
         this.title.setTitle('PDF Converter - Convert PDFs to Images Online');
         this.meta.updateTag({ name: 'description', content: 'Convert PDF files to images (JPG, PNG) quickly and securely. Free online PDF converter with privacy-first processing.' });
         break;
-      case 1: // Image tab
+      case 1:
         this.title.setTitle('Image Converter - Convert Images to PDF Online');
         this.meta.updateTag({ name: 'description', content: 'Convert images (JPG, PNG, GIF) to PDF format. Free online image to PDF converter with batch processing support.' });
         break;
-      case 2: // Batch Base64 tab
+      case 2:
         this.title.setTitle('Base64 Converter - Batch Encode/Decode Files');
         this.meta.updateTag({ name: 'description', content: 'Batch convert files to Base64 encoding or decode Base64 strings back to files. Free online Base64 converter tool.' });
         break;

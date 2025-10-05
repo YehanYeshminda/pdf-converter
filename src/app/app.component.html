@@ -5,6 +5,12 @@
     </div>
     <span class="spacer"></span>
 
+    <div class="visitor-counter" matTooltip="Total visitors to this site">
+        <mat-icon class="visitor-icon">visibility</mat-icon>
+        <span *ngIf="visitorCount >= 0">{{ visitorCount | number }}</span>
+        <span *ngIf="visitorCount < 0" class="loading-count">loading...</span>
+    </div>
+
     <mat-slide-toggle class="theme-toggle" [checked]="isDark" (change)="toggleTheme()" matTooltip="Toggle dark mode">
         <mat-icon>{{ isDark ? 'dark_mode' : 'light_mode' }}</mat-icon>
     </mat-slide-toggle>
