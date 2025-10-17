@@ -1,15 +1,61 @@
 :host {
-    display: block;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .top-toolbar {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 1000;
     display: flex;
     align-items: center;
     padding: 0 16px;
+}
+
+.sidenav-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidenav {
+    width: 260px;
+    padding: 16px 0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+
+    h3 {
+        margin-top: 16px;
+        padding: 0 16px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        opacity: 0.7;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    mat-divider {
+        margin: 16px 0;
+    }
+
+    a {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &.active {
+            background-color: rgba(0, 0, 0, 0.08);
+            font-weight: 500;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+
+        mat-icon {
+            margin-right: 16px;
+        }
+    }
 }
 
 .brand {
@@ -28,42 +74,6 @@
 
 .spacer {
     flex: 1 1 auto;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-}
-
-.main-card {
-    width: 100%;
-    max-width: 980px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(26, 36, 62, 0.08);
-}
-
-.card-header h1 {
-    margin: 0 0 6px 0;
-    font-size: 1.6rem;
-}
-
-
-.tabs {
-    margin-top: 18px;
-}
-
-.tab-content {
-    padding: 18px 6px 6px 6px;
-}
-
-.card-footer {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.6);
 }
 
 .visitor-counter {
@@ -104,16 +114,23 @@
     }
 }
 
+@media (max-width: 960px) {
+    .sidenav {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidenav-container mat-sidenav {
+        position: fixed !important;
+    }
+
+    .brand-title {
+        display: none;
+    }
+}
+
 @media (max-width: 600px) {
-    .main-card {
-        margin: 0 6px;
-        padding: 14px;
-    }
-
-    .card-header h1 {
-        font-size: 1.25rem;
-    }
-
     .visitor-counter {
         font-size: 0.8rem;
         padding: 3px 8px;

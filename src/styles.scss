@@ -68,6 +68,13 @@ body {
   }
 }
 
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+  border: none;
+}
 
 @import "tailwindcss";
 

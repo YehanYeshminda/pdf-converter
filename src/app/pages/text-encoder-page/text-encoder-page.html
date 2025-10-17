@@ -1,0 +1,64 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>Text Encoder/Decoder</h1>
+            <p class="subtitle">Encode and decode text using various encoding methods. All processing is done locally in your browser.</p>
+        </div>
+
+        <div class="encoder-container">
+            <div class="encoding-selector-row">
+                <div class="encoding-selector">
+                    <mat-form-field appearance="outline" class="encoding-select">
+                        <mat-label>Encoding Type</mat-label>
+                        <mat-select [(ngModel)]="encodingType">
+                            <mat-option *ngFor="let option of encodingOptions" [value]="option.value"> {{ option.label }} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="info-section">
+                    <ul>
+                        <li *ngIf="encodingType == 'base64'"><strong>Base64:</strong> Binary-to-text encoding scheme commonly used for data transmission</li>
+                        <li *ngIf="encodingType == 'uri'"><strong>URI Component:</strong> Encodes special characters for safe use in URLs</li>
+                        <li *ngIf="encodingType == 'hex'"><strong>Hexadecimal:</strong> Converts text to base-16 representation</li>
+                        <li *ngIf="encodingType == 'binary'"><strong>Binary:</strong> Converts text to binary (base-2) representation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-areas-container">
+                <mat-form-field appearance="outline" class="text-area-field">
+                    <mat-label>Input Text</mat-label>
+                    <textarea matInput [(ngModel)]="inputText" placeholder="Enter text to encode or decode..." rows="10" class="text-area"> </textarea>
+                </mat-form-field>
+
+                <div class="action-buttons">
+                    <button mat-raised-button color="primary" matTooltip="Encode the input text" (click)="encode()" [disabled]="!inputText">
+                        <mat-icon>arrow_downward</mat-icon>
+                        Encode
+                    </button>
+                    <button mat-raised-button color="accent" matTooltip="Decode the input text" (click)="decode()" [disabled]="!inputText">
+                        <mat-icon>arrow_upward</mat-icon>
+                        Decode
+                    </button>
+                    <button mat-raised-button (click)="swap()" matTooltip="Swap input and output text" [disabled]="!outputText">
+                        <mat-icon>swap_vert</mat-icon>
+                        Swap
+                    </button>
+                    <button mat-raised-button color="warn" matTooltip="Clear the text areas" (click)="clear()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                    </button>
+                </div>
+
+                <mat-form-field appearance="outline" class="text-area-field">
+                    <mat-label>Output Text</mat-label>
+                    <textarea matInput [(ngModel)]="outputText" placeholder="Output will appear here..." rows="10" readonly class="text-area"> </textarea>
+                    <button mat-icon-button matSuffix (click)="copyOutput()" [disabled]="!outputText" matTooltip="Copy to clipboard">
+                        <mat-icon>content_copy</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-card>
+</div>
