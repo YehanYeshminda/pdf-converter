@@ -34,22 +34,18 @@ import { MatTabsModule } from '@angular/material/tabs';
     styleUrl: './timestamp-converter-page.scss'
 })
 export class TimestampConverterPage implements OnInit {
-    // Unix to Date
     unixTimestamp: number | null = null;
     unixUnit: 'seconds' | 'milliseconds' = 'seconds';
     convertedDate: Date | null = null;
 
-    // Date to Unix
     selectedDate: Date = new Date();
     selectedTime: string = '';
     dateToUnixSeconds: number = 0;
     dateToUnixMilliseconds: number = 0;
 
-    // Current timestamp
     currentTimestamp: number = 0;
     currentDate: Date = new Date();
 
-    // Timezones
     timezones = [
         { value: 'UTC', label: 'UTC (Coordinated Universal Time)' },
         { value: 'America/New_York', label: 'EST/EDT (New York)' },
@@ -69,14 +65,12 @@ export class TimestampConverterPage implements OnInit {
     selectedTimezone: string = 'UTC';
     timezoneDate: string = '';
 
-    // Relative time
     targetDate: Date = new Date();
     relativeTime: string = '';
 
     ngOnInit(): void {
         this.updateCurrentTimestamp();
         this.initializeDateTime();
-        // Update current timestamp every second
         setInterval(() => {
             this.updateCurrentTimestamp();
         }, 1000);
@@ -235,7 +229,6 @@ export class TimestampConverterPage implements OnInit {
             this.relativeTime = `${seconds} second${seconds !== 1 ? 's' : ''} ${suffix}`;
         }
 
-        // Add exact difference
         this.relativeTime += `\n\nExact difference:\n${days} days, ${hours % 24} hours, ${minutes % 60} minutes, ${seconds % 60} seconds`;
     }
 
