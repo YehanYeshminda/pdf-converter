@@ -22,5 +22,9 @@ export const routes: Routes = [
     {
         path: 'jwt-decoder',
         loadComponent: () => import('./pages/jwt-decoder-page/jwt-decoder-page').then(m => m.JwtDecoderPage)
+    },
+    {
+        path: 'regex-tester',
+        loadComponent: () => import('./pages/regex-tester-page/regex-tester-page').then(m => m.RegexTesterPage)
     }
 ];

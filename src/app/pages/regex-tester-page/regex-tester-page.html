@@ -1,0 +1,171 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>Regular Expression Tester</h1>
+            <p class="subtitle">Test and debug your regular expressions in real-time. All processing is done locally in your browser.</p>
+        </div>
+
+        <div class="regex-container">
+            <div class="pattern-section">
+                <div class="section-header">
+                    <h3>Regular Expression Pattern</h3>
+                    <div class="header-actions">
+                        <button mat-raised-button color="accent" (click)="loadSampleText()">
+                            <mat-icon>code</mat-icon>
+                            Load Sample
+                        </button>
+                        <button mat-raised-button color="warn" (click)="clear()">
+                            <mat-icon>clear</mat-icon>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="outline" class="pattern-field">
+                    <mat-label>Enter your regex pattern</mat-label>
+                    <input matInput [(ngModel)]="regexPattern" (ngModelChange)="testRegex()" placeholder="e.g., \d{3}-\d{3}-\d{4}" class="pattern-input" />
+                    <mat-icon matPrefix>pattern</mat-icon>
+                </mat-form-field>
+
+                <div class="flags-section">
+                    <strong>Flags:</strong>
+                    <mat-checkbox [(ngModel)]="flagGlobal" (change)="testRegex()"> Global (g) - Find all matches </mat-checkbox>
+                    <mat-checkbox [(ngModel)]="flagCaseInsensitive" (change)="testRegex()"> Case Insensitive (i) - Ignore case </mat-checkbox>
+                    <mat-checkbox [(ngModel)]="flagMultiline" (change)="testRegex()"> Multiline (m) - ^ and $ match line breaks </mat-checkbox>
+                </div>
+
+                <div *ngIf="errorMessage" class="error-message">
+                    <mat-icon>error</mat-icon>
+                    <span>{{ errorMessage }}</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="test-section">
+                <div class="section-header">
+                    <h3>Test String</h3>
+                    <div class="match-info" *ngIf="matchCount > 0">
+                        <mat-chip class="match-chip">
+                            <mat-icon>check_circle</mat-icon>
+                            {{ matchCount }} {{ matchCount === 1 ? 'match' : 'matches' }} found
+                        </mat-chip>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="outline" class="test-field">
+                    <mat-label>Enter text to test against</mat-label>
+                    <textarea matInput [(ngModel)]="testString" (ngModelChange)="testRegex()" placeholder="Enter or paste text here..." rows="8" class="test-textarea"> </textarea>
+                </mat-form-field>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="results-section" *ngIf="highlightedText || matches.length > 0">
+                <div class="section-header">
+                    <h3>Results</h3>
+                    <button mat-icon-button (click)="copyMatches()" [disabled]="matches.length === 0" matTooltip="Copy all matches">
+                        <mat-icon>content_copy</mat-icon>
+                    </button>
+                </div>
+
+                <div class="highlighted-output" [innerHTML]="highlightedText"></div>
+
+                <div class="matches-list" *ngIf="matches.length > 0">
+                    <h4>Match Details</h4>
+                    <div class="match-item" *ngFor="let match of matches; let i = index">
+                        <div class="match-header">
+                            <span class="match-number">Match {{ i + 1 }}</span>
+                            <span class="match-index">Index: {{ match.index }}</span>
+                        </div>
+                        <div class="match-value">
+                            <code>{{ match.match }}</code>
+                        </div>
+                        <div class="match-groups" *ngIf="match.groups.length > 0">
+                            <strong>Capture Groups:</strong>
+                            <div class="group-item" *ngFor="let group of match.groups; let j = index">
+                                <span class="group-number">Group {{ j + 1 }}:</span>
+                                <code>{{ group || '(empty)' }}</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="patterns-section">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon>library_books</mat-icon>
+                            Common Regex Patterns
+                        </mat-panel-title>
+                        <mat-panel-description> Click to load a pattern </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="pattern-list">
+                        <button mat-stroked-button class="pattern-button" *ngFor="let pattern of commonPatterns" (click)="loadPattern(pattern)" matTooltip="{{ pattern.description }}">
+                            <div class="pattern-info">
+                                <strong>{{ pattern.name }}</strong>
+                                <code class="pattern-code">{{ pattern.pattern }}</code>
+                            </div>
+                        </button>
+                    </div>
+                </mat-expansion-panel>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="reference-section">
+                <h3>Quick Reference</h3>
+                <div class="reference-grid">
+                    <div class="reference-category">
+                        <h4>Character Classes</h4>
+                        <ul>
+                            <li><code>.</code> - Any character except newline</li>
+                            <li><code>\d</code> - Any digit (0-9)</li>
+                            <li><code>\w</code> - Any word character (a-z, A-Z, 0-9, _)</li>
+                            <li><code>\s</code> - Any whitespace</li>
+                            <li><code>[abc]</code> - Any character in set</li>
+                            <li><code>[^abc]</code> - Any character NOT in set</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-category">
+                        <h4>Quantifiers</h4>
+                        <ul>
+                            <li><code>*</code> - 0 or more</li>
+                            <li><code>+</code> - 1 or more</li>
+                            <li><code>?</code> - 0 or 1</li>
+                            <li><code>{{ '{' }}n{{ '}' }}</code> - Exactly n times</li>
+                            <li><code>{{ '{' }}n,{{ '}' }}</code> - n or more times</li>
+                            <li><code>{{ '{' }}n,m{{ '}' }}</code> - Between n and m times</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-category">
+                        <h4>Anchors</h4>
+                        <ul>
+                            <li><code>^</code> - Start of string/line</li>
+                            <li><code>$</code> - End of string/line</li>
+                            <li><code>\b</code> - Word boundary</li>
+                            <li><code>\B</code> - Not word boundary</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-category">
+                        <h4>Groups & Lookaround</h4>
+                        <ul>
+                            <li><code>(abc)</code> - Capture group</li>
+                            <li><code>(?:abc)</code> - Non-capturing group</li>
+                            <li><code>(?=abc)</code> - Positive lookahead</li>
+                            <li><code>(?!abc)</code> - Negative lookahead</li>
+                            <li><code>a|b</code> - Alternation (a or b)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>

@@ -159,6 +159,13 @@ export class App implements OnInit {
           content: 'Decode and debug JWT tokens instantly. View header, payload, signature, and expiration details. Free online JWT decoder tool.'
         });
         break;
+      case '/regex-tester':
+        this.title.setTitle('RegEx Tester - Test Regular Expressions Online');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Test and debug regular expressions in real-time. Highlight matches, view capture groups, and access common regex patterns. Free online regex tester.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({
