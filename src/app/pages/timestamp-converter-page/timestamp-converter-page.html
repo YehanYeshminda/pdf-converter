@@ -1,0 +1,218 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>Timestamp Converter</h1>
+            <p class="subtitle">Convert between Unix timestamps and human-readable dates, compare dates, and calculate time differences across timezones.</p>
+        </div>
+
+        <div class="converter-container">
+            <!-- Current Timestamp -->
+            <div class="current-timestamp-section">
+                <h3>
+                    <mat-icon>schedule</mat-icon>
+                    Current Timestamp
+                </h3>
+                <div class="current-display">
+                    <div class="timestamp-item">
+                        <strong>Unix (seconds):</strong>
+                        <div class="value-row">
+                            <code>{{ currentTimestamp }}</code>
+                            <button mat-icon-button (click)="copyToClipboard(currentTimestamp)" matTooltip="Copy">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="timestamp-item">
+                        <strong>Unix (milliseconds):</strong>
+                        <div class="value-row">
+                            <code>{{ currentTimestamp * 1000 }}</code>
+                            <button mat-icon-button (click)="copyToClipboard(currentTimestamp * 1000)" matTooltip="Copy">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="timestamp-item full-width">
+                        <strong>Current Date & Time:</strong>
+                        <span>{{ formatDate(currentDate) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Tabs for different conversions -->
+            <mat-tab-group class="converter-tabs">
+                <!-- Unix to Date Tab -->
+                <mat-tab label="Unix to Date">
+                    <div class="tab-content">
+                        <div class="conversion-section">
+                            <h3>Convert Unix Timestamp to Date</h3>
+
+                            <div class="input-row">
+                                <mat-form-field appearance="outline" class="timestamp-input">
+                                    <mat-label>Unix Timestamp</mat-label>
+                                    <input matInput type="number" [(ngModel)]="unixTimestamp" (ngModelChange)="convertUnixToDate()" placeholder="1634567890" />
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="unit-select">
+                                    <mat-label>Unit</mat-label>
+                                    <mat-select [(ngModel)]="unixUnit" (ngModelChange)="convertUnixToDate()">
+                                        <mat-option value="seconds">Seconds</mat-option>
+                                        <mat-option value="milliseconds">Milliseconds</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <button mat-raised-button color="primary" (click)="useCurrentTimestamp()">
+                                    <mat-icon>update</mat-icon>
+                                    Use Current
+                                </button>
+                            </div>
+
+                            <div class="result-section" *ngIf="convertedDate">
+                                <h4>Converted Date:</h4>
+                                <div class="result-grid">
+                                    <div class="result-item">
+                                        <strong>Local Time:</strong>
+                                        <span>{{ formatDate(convertedDate) }}</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <strong>ISO 8601:</strong>
+                                        <span>{{ formatISODate(convertedDate) }}</span>
+                                        <button mat-icon-button (click)="copyToClipboard(formatISODate(convertedDate))" matTooltip="Copy">
+                                            <mat-icon>content_copy</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="result-item">
+                                        <strong>UTC:</strong>
+                                        <span>{{ formatUTCDate(convertedDate) }}</span>
+                                        <button mat-icon-button (click)="copyToClipboard(formatUTCDate(convertedDate))" matTooltip="Copy">
+                                            <mat-icon>content_copy</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Timezone Conversion -->
+                                <div class="timezone-section">
+                                    <h4>Convert to Timezone:</h4>
+                                    <div class="timezone-row">
+                                        <mat-form-field appearance="outline" class="timezone-select">
+                                            <mat-label>Select Timezone</mat-label>
+                                            <mat-select [(ngModel)]="selectedTimezone" (ngModelChange)="convertToTimezone()">
+                                                <mat-option *ngFor="let tz of timezones" [value]="tz.value"> {{ tz.label }} </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <button mat-raised-button color="accent" (click)="convertToTimezone()">
+                                            <mat-icon>public</mat-icon>
+                                            Convert
+                                        </button>
+                                    </div>
+                                    <div class="timezone-result" *ngIf="timezoneDate">
+                                        <mat-icon>location_on</mat-icon>
+                                        <span>{{ timezoneDate }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+
+                <!-- Date to Unix Tab -->
+                <mat-tab label="Date to Unix">
+                    <div class="tab-content">
+                        <div class="conversion-section">
+                            <h3>Convert Date to Unix Timestamp</h3>
+
+                            <div class="date-input-row">
+                                <mat-form-field appearance="outline" class="date-picker">
+                                    <mat-label>Select Date</mat-label>
+                                    <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (ngModelChange)="convertDateToUnix()" />
+                                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="time-input">
+                                    <mat-label>Time</mat-label>
+                                    <input matInput type="time" [(ngModel)]="selectedTime" (ngModelChange)="convertDateToUnix()" />
+                                    <mat-icon matPrefix>access_time</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="result-section">
+                                <h4>Unix Timestamps:</h4>
+                                <div class="result-grid">
+                                    <div class="result-item">
+                                        <strong>Seconds:</strong>
+                                        <div class="value-row">
+                                            <code>{{ dateToUnixSeconds }}</code>
+                                            <button mat-icon-button (click)="copyToClipboard(dateToUnixSeconds)" matTooltip="Copy">
+                                                <mat-icon>content_copy</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="result-item">
+                                        <strong>Milliseconds:</strong>
+                                        <div class="value-row">
+                                            <code>{{ dateToUnixMilliseconds }}</code>
+                                            <button mat-icon-button (click)="copyToClipboard(dateToUnixMilliseconds)" matTooltip="Copy">
+                                                <mat-icon>content_copy</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+
+                <!-- Relative Time Tab -->
+                <mat-tab label="Relative Time">
+                    <div class="tab-content">
+                        <div class="conversion-section">
+                            <h3>Calculate Relative Time</h3>
+
+                            <div class="date-input-row">
+                                <mat-form-field appearance="outline" class="date-picker">
+                                    <mat-label>Target Date</mat-label>
+                                    <input matInput [matDatepicker]="relativePicker" [(ngModel)]="targetDate" (ngModelChange)="calculateRelativeTime()" />
+                                    <mat-datepicker-toggle matIconSuffix [for]="relativePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #relativePicker></mat-datepicker>
+                                </mat-form-field>
+
+                                <button mat-raised-button color="primary" (click)="calculateRelativeTime()">
+                                    <mat-icon>calculate</mat-icon>
+                                    Calculate
+                                </button>
+                            </div>
+
+                            <div class="relative-result" *ngIf="relativeTime">
+                                <mat-icon>schedule</mat-icon>
+                                <pre>{{ relativeTime }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+            <div class="action-buttons">
+                <button mat-raised-button color="warn" (click)="clear()">
+                    <mat-icon>clear</mat-icon>
+                    Clear All
+                </button>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <h3>About Unix Timestamps</h3>
+                <ul>
+                    <li><strong>Unix Timestamp:</strong> Number of seconds (or milliseconds) that have elapsed since January 1, 1970 00:00:00 UTC (Unix Epoch)</li>
+                    <li><strong>Seconds:</strong> Standard Unix timestamp format used in most programming languages</li>
+                    <li><strong>Milliseconds:</strong> Used in JavaScript and some other languages</li>
+                    <li><strong>UTC:</strong> Coordinated Universal Time - the primary time standard</li>
+                    <li><strong>ISO 8601:</strong> International standard for date and time representation</li>
+                </ul>
+            </div>
+        </div>
+    </mat-card>
+</div>

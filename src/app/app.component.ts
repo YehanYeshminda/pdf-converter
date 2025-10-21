@@ -166,6 +166,13 @@ export class App implements OnInit {
           content: 'Test and debug regular expressions in real-time. Highlight matches, view capture groups, and access common regex patterns. Free online regex tester.'
         });
         break;
+      case '/timestamp-converter':
+        this.title.setTitle('Timestamp Converter - Unix Timestamp to Date Converter');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Convert Unix timestamps to dates and vice versa. Compare dates, calculate relative time, and convert between timezones. Free online timestamp converter.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({

@@ -26,5 +26,9 @@ export const routes: Routes = [
     {
         path: 'regex-tester',
         loadComponent: () => import('./pages/regex-tester-page/regex-tester-page').then(m => m.RegexTesterPage)
+    },
+    {
+        path: 'timestamp-converter',
+        loadComponent: () => import('./pages/timestamp-converter-page/timestamp-converter-page').then(m => m.TimestampConverterPage)
     }
 ];
