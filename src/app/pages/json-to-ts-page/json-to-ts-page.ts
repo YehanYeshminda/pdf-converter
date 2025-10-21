@@ -93,12 +93,10 @@ export class JsonToTsPage {
 
             let result = '';
 
-            // Add nested interfaces first
             if (nestedInterfaces.length > 0) {
                 result += nestedInterfaces.join('\n\n') + '\n\n';
             }
 
-            // Add main interface
             result += `${indent}export interface ${name} {\n`;
             result += properties.join('\n');
             result += `\n${indent}}`;
@@ -134,7 +132,6 @@ export class JsonToTsPage {
     }
 
     private getArrayItemTypeName(parentName: string): string {
-        // Remove 's' or 'List' suffix if exists, then add 'Item'
         if (parentName.endsWith('s')) {
             return parentName.slice(0, -1);
         }
@@ -157,25 +154,26 @@ export class JsonToTsPage {
 
     loadSampleJson(): void {
         this.jsonInput = `{
-  "id": 1,
-  "name": "John Doe",
-  "email": "john@example.com",
-  "isActive": true,
-  "age": 30,
-  "address": {
-    "street": "123 Main St",
-    "city": "New York",
-    "zipCode": "10001"
-  },
-  "hobbies": ["reading", "gaming", "coding"],
-  "orders": [
-    {
-      "orderId": "ORD-001",
-      "total": 99.99,
-      "items": ["Laptop", "Mouse"]
-    }
-  ]
-}`;
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "isActive": true,
+            "age": 30,
+            "address": {
+                "street": "123 Main St",
+                "city": "New York",
+                "zipCode": "10001"
+            },
+            "hobbies": ["reading", "gaming", "coding"],
+            "orders": [
+                {
+                "orderId": "ORD-001",
+                "total": 99.99,
+                "items": ["Laptop", "Mouse"]
+                }
+            ]
+            }`;
+
         this.convert();
     }
 }

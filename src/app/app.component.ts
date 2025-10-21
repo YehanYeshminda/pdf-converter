@@ -152,6 +152,13 @@ export class App implements OnInit {
           content: 'Convert JSON objects to TypeScript interfaces instantly. Generate typed interfaces with optional fields, readonly properties, and nested types.'
         });
         break;
+      case '/jwt-decoder':
+        this.title.setTitle('JWT Decoder & Debugger - Decode JSON Web Tokens');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Decode and debug JWT tokens instantly. View header, payload, signature, and expiration details. Free online JWT decoder tool.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({

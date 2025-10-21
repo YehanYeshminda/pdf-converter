@@ -1,0 +1,142 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>JWT Decoder & Debugger</h1>
+            <p class="subtitle">Decode and verify JSON Web Tokens (JWT). All processing is done locally in your browser - your tokens never leave your device.</p>
+        </div>
+
+        <div class="decoder-container">
+            <div class="input-section">
+                <div class="section-header">
+                    <h3>JWT Token</h3>
+                    <div class="header-actions">
+                        <button mat-raised-button color="accent" (click)="loadSampleJWT()" matTooltip="Load a sample JWT">
+                            <mat-icon>code</mat-icon>
+                            Load Sample
+                        </button>
+                        <button mat-raised-button color="warn" (click)="clear()">
+                            <mat-icon>clear</mat-icon>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="outline" class="jwt-input-field">
+                    <mat-label>Paste your JWT token here</mat-label>
+                    <textarea matInput [(ngModel)]="jwtInput" (ngModelChange)="decode()" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." rows="6" class="jwt-textarea"> </textarea>
+                </mat-form-field>
+
+                <div class="action-buttons">
+                    <button mat-raised-button color="primary" (click)="decode()" [disabled]="!jwtInput">
+                        <mat-icon>play_arrow</mat-icon>
+                        Decode Token
+                    </button>
+                </div>
+
+                <div *ngIf="errorMessage" class="error-message">
+                    <mat-icon>error</mat-icon>
+                    <span>{{ errorMessage }}</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div *ngIf="decodedJWT && !errorMessage" class="decoded-section">
+                <div class="status-chips">
+                    <mat-chip-set>
+                        <mat-chip class="status-chip valid"> Valid Format </mat-chip>
+                        <mat-chip [class]="decodedJWT.isExpired ? 'status-chip expired' : 'status-chip active'"> {{ decodedJWT.isExpired ? 'Expired' : 'Active' }} </mat-chip>
+                        <mat-chip class="status-chip algorithm"> {{ decodedJWT.header.alg || 'Unknown' }} </mat-chip>
+                    </mat-chip-set>
+                </div>
+
+                <div *ngIf="decodedJWT.expirationDate || decodedJWT.issuedAt" class="time-info">
+                    <div *ngIf="decodedJWT.issuedAt" class="time-item">
+                        <mat-icon>event</mat-icon>
+                        <div class="time-details">
+                            <strong>Issued At:</strong>
+                            <span>{{ formatTimestamp(decodedJWT.issuedAt) }}</span>
+                        </div>
+                    </div>
+                    <div *ngIf="decodedJWT.expirationDate" class="time-item">
+                        <mat-icon [class.expired]="decodedJWT.isExpired">{{ decodedJWT.isExpired ? 'event_busy' : 'event_available' }}</mat-icon>
+                        <div class="time-details">
+                            <strong>{{ decodedJWT.isExpired ? 'Expired At:' : 'Expires At:' }}</strong>
+                            <span>{{ formatTimestamp(decodedJWT.expirationDate) }}</span>
+                            <small class="time-remaining">{{ getTimeRemaining(decodedJWT.expirationDate) }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <mat-tab-group class="decoded-tabs">
+                    <mat-tab label="Header">
+                        <div class="tab-content">
+                            <div class="json-section">
+                                <div class="section-title">
+                                    <h4>JOSE Header</h4>
+                                    <button mat-icon-button (click)="copyToClipboard(headerJson)" matTooltip="Copy header JSON">
+                                        <mat-icon>content_copy</mat-icon>
+                                    </button>
+                                </div>
+                                <pre class="json-output">{{ headerJson }}</pre>
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Payload">
+                        <div class="tab-content">
+                            <div class="json-section">
+                                <div class="section-title">
+                                    <h4>Payload (Claims)</h4>
+                                    <button mat-icon-button (click)="copyToClipboard(payloadJson)" matTooltip="Copy payload JSON">
+                                        <mat-icon>content_copy</mat-icon>
+                                    </button>
+                                </div>
+                                <pre class="json-output">{{ payloadJson }}</pre>
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Signature">
+                        <div class="tab-content">
+                            <div class="signature-section">
+                                <h4>Signature</h4>
+                                <p class="signature-text">{{ decodedJWT.signature }}</p>
+                                <div class="signature-info">
+                                    <mat-icon>info</mat-icon>
+                                    <p>The signature is used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way. To verify the signature, you need the secret key that was used to sign the token.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+
+            <div *ngIf="!decodedJWT && !errorMessage && jwtInput" class="placeholder-section">
+                <mat-icon class="placeholder-icon">key</mat-icon>
+                <p>Enter a valid JWT token to decode and inspect its contents</p>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="info-section">
+                <h3>About JWT (JSON Web Token)</h3>
+                <p>A JWT is composed of three parts separated by dots (.):</p>
+                <ul>
+                    <li><strong>Header:</strong> Contains the token type (JWT) and the signing algorithm (e.g., HS256, RS256)</li>
+                    <li><strong>Payload:</strong> Contains the claims - statements about an entity (typically the user) and additional data</li>
+                    <li><strong>Signature:</strong> Used to verify the token hasn't been altered. Created by encoding the header and payload, and signing them</li>
+                </ul>
+                <p><strong>Common Claims:</strong></p>
+                <ul class="claims-list">
+                    <li><code>iss</code> - Issuer</li>
+                    <li><code>sub</code> - Subject</li>
+                    <li><code>aud</code> - Audience</li>
+                    <li><code>exp</code> - Expiration Time</li>
+                    <li><code>iat</code> - Issued At</li>
+                    <li><code>nbf</code> - Not Before</li>
+                </ul>
+            </div>
+        </div>
+    </mat-card>
+</div>
