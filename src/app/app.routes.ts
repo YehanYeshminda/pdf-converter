@@ -14,5 +14,9 @@ export const routes: Routes = [
     {
         path: 'text-encoder-decoder',
         loadComponent: () => import('./pages/text-encoder-page/text-encoder-page').then(m => m.TextEncoderPage)
+    },
+    {
+        path: 'json-to-typescript',
+        loadComponent: () => import('./pages/json-to-ts-page/json-to-ts-page').then(m => m.JsonToTsPage)
     }
 ];

@@ -1,0 +1,82 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>JSON to TypeScript Converter</h1>
+            <p class="subtitle">Convert JSON objects to TypeScript interfaces instantly. All processing is done locally in your browser.</p>
+        </div>
+
+        <div class="converter-container">
+            <div class="options-row">
+                <mat-form-field appearance="outline" class="interface-name-field">
+                    <mat-label>Root Interface Name</mat-label>
+                    <input matInput [(ngModel)]="interfaceName" placeholder="RootObject" />
+                </mat-form-field>
+
+                <div class="options-checkboxes">
+                    <mat-checkbox [(ngModel)]="useOptionalFields" (change)="convert()"> Optional Fields (?) </mat-checkbox>
+                    <mat-checkbox [(ngModel)]="useReadonly" (change)="convert()"> Readonly Properties </mat-checkbox>
+                </div>
+
+                <button mat-raised-button color="accent" (click)="loadSampleJson()">
+                    <mat-icon>code</mat-icon>
+                    Load Sample
+                </button>
+            </div>
+
+            <div class="text-areas-container">
+                <div class="input-section">
+                    <div class="section-header">
+                        <h3>JSON Input</h3>
+                        <button mat-icon-button color="primary" (click)="convert()" matTooltip="Convert to TypeScript">
+                            <mat-icon>play_arrow</mat-icon>
+                        </button>
+                    </div>
+                    <mat-form-field appearance="outline" class="text-area-field">
+                        <textarea matInput [(ngModel)]="jsonInput" (ngModelChange)="convert()" placeholder="Paste your JSON here..." rows="20" class="text-area json-input"> </textarea>
+                    </mat-form-field>
+                </div>
+
+                <div class="divider-section">
+                    <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                </div>
+
+                <div class="output-section">
+                    <div class="section-header">
+                        <h3>TypeScript Output</h3>
+                        <button mat-icon-button color="primary" (click)="copyOutput()" [disabled]="!tsOutput || tsOutput.startsWith('// Error')" matTooltip="Copy to clipboard">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                    <mat-form-field appearance="outline" class="text-area-field">
+                        <textarea matInput [(ngModel)]="tsOutput" placeholder="TypeScript interfaces will appear here..." rows="20" readonly class="text-area ts-output"> </textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button mat-raised-button color="primary" (click)="convert()" [disabled]="!jsonInput">
+                    <mat-icon>transform</mat-icon>
+                    Convert
+                </button>
+                <button mat-raised-button color="warn" (click)="clear()">
+                    <mat-icon>clear</mat-icon>
+                    Clear All
+                </button>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="info-section">
+                <h3>Features:</h3>
+                <ul>
+                    <li><strong>Automatic Type Detection:</strong> Detects string, number, boolean, array, and object types</li>
+                    <li><strong>Nested Objects:</strong> Generates separate interfaces for nested objects and arrays</li>
+                    <li><strong>Optional Fields:</strong> Toggle to make all fields optional with the ? modifier</li>
+                    <li><strong>Readonly Properties:</strong> Make all properties readonly for immutable data structures</li>
+                    <li><strong>Custom Naming:</strong> Specify your own root interface name</li>
+                    <li><strong>Real-time Conversion:</strong> Automatically converts as you type</li>
+                </ul>
+            </div>
+        </div>
+    </mat-card>
+</div>

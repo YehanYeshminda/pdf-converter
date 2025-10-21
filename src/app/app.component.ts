@@ -145,11 +145,18 @@ export class App implements OnInit {
           content: 'Encode and decode text using various encoding methods. Free online text encoder and decoder tool.'
         });
         break;
-      default:
-        this.title.setTitle('File Converter - Convert PDFs, Images & Base64 Online');
+      case '/json-to-typescript':
+        this.title.setTitle('JSON to TypeScript Converter - Generate TypeScript Interfaces');
         this.meta.updateTag({
           name: 'description',
-          content: 'Free online file converter tool. Convert PDFs to images, images to PDFs, and batch convert files to Base64. Fast, local, and privacy-first conversion.'
+          content: 'Convert JSON objects to TypeScript interfaces instantly. Generate typed interfaces with optional fields, readonly properties, and nested types.'
+        });
+        break;
+      default:
+        this.title.setTitle('ToolVerse - Free Online Developer Tools');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Free online developer tools. Convert PDFs, encode/decode text, generate TypeScript interfaces from JSON, and more. Fast, local, and privacy-first.'
         });
     }
   }
