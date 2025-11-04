@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'app-pdf-editor-page',
@@ -29,7 +30,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
         MatFormFieldModule,
         MatButtonToggleModule,
         MatChipsModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatInputModule
     ],
     templateUrl: './pdf-editor-page.html',
     styleUrl: './pdf-editor-page.scss'

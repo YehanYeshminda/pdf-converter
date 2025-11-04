@@ -6,7 +6,6 @@
         </div>
 
         <div class="editor-container">
-            <!-- Initial Options (shown when canvas is not initialized) -->
             <div class="initial-options" *ngIf="!canvasInitialized">
                 <h2>Choose an Option to Get Started</h2>
                 <div class="option-cards">
@@ -90,8 +89,8 @@
                         <div class="brush-settings">
                             <div class="setting-group">
                                 <label>Size: {{ brushSize }}px</label>
-                                <mat-slider min="1" max="20" step="1" [(ngModel)]="brushSize" color="primary">
-                                    <input matSliderThumb name="brushSize" />
+                                <mat-slider min="1" max="20" step="1" color="primary">
+                                    <input matSliderThumb [(ngModel)]="brushSize" name="brushSize" />
                                 </mat-slider>
                             </div>
                             <div class="color-palette">
@@ -104,8 +103,8 @@
                         <h3>Eraser Settings</h3>
                         <div class="eraser-settings">
                             <label>Size: {{ eraserSize }}px</label>
-                            <mat-slider min="5" max="50" step="5" [(ngModel)]="eraserSize" color="accent">
-                                <input matSliderThumb name="eraserSize" />
+                            <mat-slider min="5" max="50" step="5" color="accent">
+                                <input matSliderThumb [(ngModel)]="eraserSize" name="eraserSize" />
                             </mat-slider>
                         </div>
                     </div>
@@ -115,8 +114,8 @@
                         <div class="text-settings">
                             <div class="setting-group">
                                 <label>Font Size: {{ fontSize }}px</label>
-                                <mat-slider min="8" max="72" step="2" [(ngModel)]="fontSize" color="primary">
-                                    <input matSliderThumb name="fontSize" />
+                                <mat-slider min="8" max="72" step="2" color="primary">
+                                    <input matSliderThumb [(ngModel)]="fontSize" name="fontSize" />
                                 </mat-slider>
                             </div>
                             <div class="color-palette">
@@ -145,7 +144,6 @@
 
                 <mat-divider></mat-divider>
 
-                <!-- PDF Navigation -->
                 <div class="pdf-navigation" *ngIf="totalPages > 0">
                     <button mat-icon-button (click)="previousPage()" [disabled]="currentPage <= 1" matTooltip="Previous Page">
                         <mat-icon>navigate_before</mat-icon>
@@ -156,11 +154,9 @@
                     </button>
                 </div>
 
-                <!-- Canvas Area -->
                 <div class="canvas-container">
                     <canvas #canvas class="drawing-canvas" [class.text-mode]="currentTool === 'text'"></canvas>
 
-                    <!-- Text Input Overlay -->
                     <div class="text-input-overlay" *ngIf="isAddingText">
                         <mat-card class="text-input-card">
                             <h3>Add Text</h3>
@@ -178,7 +174,6 @@
 
                 <mat-divider></mat-divider>
 
-                <!-- Info Section -->
                 <div class="info-section">
                     <h3>How to Use:</h3>
                     <ul>
