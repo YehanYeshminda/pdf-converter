@@ -187,6 +187,13 @@ export class App implements OnInit {
           content: 'Split PDF files into individual pages or custom page ranges. Extract specific pages, create multiple PDFs, and download instantly. Free online PDF splitter tool.'
         });
         break;
+      case '/pdf-signature':
+        this.title.setTitle('PDF Signature - Sign PDF Documents Online');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Add electronic or handwritten signatures to PDF documents online. Draw, type, or upload your signature and place it on any page. Free online PDF signature tool.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({

@@ -38,5 +38,9 @@ export const routes: Routes = [
     {
         path: 'pdf-splitter',
         loadComponent: () => import('./pages/pdf-splitter-page/pdf-splitter-page').then(m => m.PdfSplitterPage)
+    },
+    {
+        path: 'pdf-signature',
+        loadComponent: () => import('./pages/pdf-signature-page/pdf-signature-page').then(m => m.PdfSignaturePage)
     }
 ];

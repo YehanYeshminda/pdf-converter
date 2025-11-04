@@ -1,0 +1,203 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>PDF Signature</h1>
+            <p class="subtitle">Add electronic or handwritten signatures to your PDF documents</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section" [class.dragging]="isDragging" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+            <input #fileInput type="file" accept=".pdf" (change)="onFileSelect($event)" hidden />
+
+            <div class="upload-content" *ngIf="!pdfFile">
+                <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                <h2>Upload PDF File</h2>
+                <p>Drag and drop your PDF here or click to browse</p>
+                <button mat-raised-button color="primary" (click)="fileInput.click()">
+                    <mat-icon>upload_file</mat-icon>
+                    Choose PDF File
+                </button>
+            </div>
+
+            <div class="file-info" *ngIf="pdfFile">
+                <mat-icon class="file-icon">picture_as_pdf</mat-icon>
+                <div class="info-details">
+                    <h3>{{ fileName }}</h3>
+                    <p>{{ totalPages }} {{ totalPages === 1 ? 'page' : 'pages' }}</p>
+                </div>
+                <button mat-icon-button color="warn" (click)="resetAll()" matTooltip="Remove file">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <mat-divider *ngIf="pdfFile"></mat-divider>
+
+        <div class="content-grid" *ngIf="pdfFile">
+            <div class="signature-panel">
+                <h2>Create Signature</h2>
+
+                <mat-radio-group [(ngModel)]="signatureMethod" (change)="onSignatureMethodChange()" class="method-selector">
+                    <mat-radio-button value="draw">
+                        <mat-icon>brush</mat-icon>
+                        Draw
+                    </mat-radio-button>
+                    <mat-radio-button value="type">
+                        <mat-icon>text_fields</mat-icon>
+                        Type
+                    </mat-radio-button>
+                    <mat-radio-button value="upload">
+                        <mat-icon>image</mat-icon>
+                        Upload
+                    </mat-radio-button>
+                </mat-radio-group>
+
+                <div class="signature-method-content" *ngIf="signatureMethod === 'draw'">
+                    <div class="signature-canvas-container">
+                        <canvas #signatureCanvas width="400" height="150" (mousedown)="startDrawing($event)" (mousemove)="draw($event)" (mouseup)="stopDrawing()" (mouseleave)="stopDrawing()" (touchstart)="startDrawingTouch($event)" (touchmove)="drawTouch($event)" (touchend)="stopDrawing()"></canvas>
+                        <div class="canvas-hint" *ngIf="!hasDrawn && !signatureDataUrl">Draw your signature here</div>
+                    </div>
+                    <div class="canvas-actions">
+                        <button mat-stroked-button (click)="clearSignatureCanvas()">
+                            <mat-icon>clear</mat-icon>
+                            Clear
+                        </button>
+                        <button mat-raised-button color="primary" (click)="saveDrawnSignature()" [disabled]="!signatureDataUrl">
+                            <mat-icon>check</mat-icon>
+                            Save Signature
+                        </button>
+                    </div>
+                </div>
+
+                <div class="signature-method-content" *ngIf="signatureMethod === 'type'">
+                    <div class="type-signature-form">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Your Name</mat-label>
+                            <input matInput [(ngModel)]="typedSignature" placeholder="Enter your name" (ngModelChange)="generateTypedSignature()" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Font Style</mat-label>
+                            <mat-select [(ngModel)]="selectedFont" (ngModelChange)="generateTypedSignature()">
+                                <mat-option *ngFor="let font of availableFonts" [value]="font.value" [style.font-family]="font.value"> {{ font.name }} </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <div class="color-picker">
+                            <label>Signature Color</label>
+                            <div class="color-options">
+                                <button *ngFor="let color of ['#000000', '#0000FF', '#1E40AF', '#4B5563']" class="color-button" [class.selected]="signatureColor === color" [style.background-color]="color" (click)="signatureColor = color; generateTypedSignature()"></button>
+                            </div>
+                        </div>
+
+                        <div class="signature-preview" *ngIf="typedSignature">
+                            <div class="preview-label">Preview:</div>
+                            <div class="typed-signature-display" [style.font-family]="selectedFont" [style.color]="signatureColor">{{ typedSignature }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signature-method-content" *ngIf="signatureMethod === 'upload'">
+                    <div class="upload-signature-area" (click)="triggerSignatureImageUpload()">
+                        <mat-icon *ngIf="!uploadedSignatureUrl">add_photo_alternate</mat-icon>
+                        <img *ngIf="uploadedSignatureUrl" [src]="uploadedSignatureUrl" alt="Uploaded signature" />
+                        <p *ngIf="!uploadedSignatureUrl">Click to upload signature image</p>
+                        <p class="hint">PNG or JPG (transparent background recommended)</p>
+                    </div>
+                    <input #signatureImageInput type="file" accept="image/*" (change)="onSignatureImageSelect($event)" hidden />
+                </div>
+
+                <div class="signature-result" *ngIf="signatureDataUrl">
+                    <div class="result-header">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Signature Ready</span>
+                    </div>
+                    <img [src]="signatureDataUrl" alt="Your signature" class="signature-preview-img" />
+                </div>
+            </div>
+
+            <div class="pdf-viewer-panel">
+                <h2>Place Signature on PDF</h2>
+
+                <div class="pdf-controls">
+                    <div class="pagination">
+                        <button mat-icon-button (click)="previousPage()" [disabled]="currentPage === 1">
+                            <mat-icon>chevron_left</mat-icon>
+                        </button>
+                        <span>Page {{ currentPage }} / {{ totalPages }}</span>
+                        <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                            <mat-icon>chevron_right</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="zoom-controls">
+                        <button mat-icon-button (click)="zoomOut()" matTooltip="Zoom out">
+                            <mat-icon>zoom_out</mat-icon>
+                        </button>
+                        <span>{{ (pdfScale * 100).toFixed(0) }}%</span>
+                        <button mat-icon-button (click)="zoomIn()" matTooltip="Zoom in">
+                            <mat-icon>zoom_in</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="history-controls">
+                        <button mat-icon-button (click)="undo()" [disabled]="historyStep <= 0" matTooltip="Undo">
+                            <mat-icon>undo</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="redo()" [disabled]="historyStep >= history.length - 1" matTooltip="Redo">
+                            <mat-icon>redo</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="removeLastSignature()" [disabled]="signedPages.length === 0" matTooltip="Remove last">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pdf-canvas-container" [class.placing]="placingSignature">
+                    <canvas #pdfCanvas (click)="onPdfCanvasClick($event)"></canvas>
+                    <div class="placement-hint" *ngIf="placingSignature">
+                        <mat-icon>touch_app</mat-icon>
+                        Click on the PDF to place your signature
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button mat-raised-button color="accent" (click)="placingSignature = true" [disabled]="!signatureDataUrl || placingSignature">
+                        <mat-icon>add_circle</mat-icon>
+                        Place Signature ({{ signedPages.length }} placed)
+                    </button>
+                    <button mat-raised-button color="primary" (click)="applySignatureToPDF()" [disabled]="signedPages.length === 0 || isProcessing">
+                        <mat-icon>done_all</mat-icon>
+                        Apply & Generate PDF
+                    </button>
+                </div>
+
+                <div class="processing-section" *ngIf="isProcessing">
+                    <mat-progress-bar mode="determinate" [value]="processingProgress"></mat-progress-bar>
+                    <p>Processing... {{ processingProgress.toFixed(0) }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="results-section" *ngIf="signedPdfBlob">
+            <h2>
+                <mat-icon>check_circle</mat-icon>
+                Signed PDF Ready
+            </h2>
+            <div class="result-actions">
+                <button mat-raised-button color="primary" (click)="downloadSignedPDF()">
+                    <mat-icon>download</mat-icon>
+                    Download Signed PDF
+                </button>
+                <button mat-stroked-button (click)="previewSignedPDF()">
+                    <mat-icon>visibility</mat-icon>
+                    Preview in New Tab
+                </button>
+                <button mat-stroked-button color="warn" (click)="resetAll()">
+                    <mat-icon>refresh</mat-icon>
+                    Start New Document
+                </button>
+            </div>
+        </section>
+    </mat-card>
+</div>
