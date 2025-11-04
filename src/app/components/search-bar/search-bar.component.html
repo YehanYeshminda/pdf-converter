@@ -1,0 +1,42 @@
+<div class="search-dialog">
+    <div class="search-header">
+        <div class="search-input-container">
+            <mat-icon class="search-icon">search</mat-icon>
+            <input class="search-dialog-input" [formControl]="searchControl" placeholder="Search tools..." autocomplete="off" spellcheck="false" />
+            <button mat-icon-button (click)="closeDialog()" class="close-btn" matTooltip="Close (Esc)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="search-body">
+        <div class="search-results-container">
+            <div *ngFor="let result of searchResults; trackBy: trackByRoute" class="search-result-item" (click)="onResultClick(result)" tabindex="0" role="button">
+                <div class="result-icon-container">
+                    <mat-icon class="result-icon">{{ result.icon }}</mat-icon>
+                </div>
+                <div class="result-content">
+                    <div class="result-title">{{ result.title }}</div>
+                    <div class="result-description">{{ result.description }}</div>
+                </div>
+                <div class="result-category-badge">{{ result.category }}</div>
+            </div>
+        </div>
+
+        <div *ngIf="searchResults.length === 0" class="no-results">
+            <mat-icon>search_off</mat-icon>
+            <div class="no-results-text">
+                <div class="no-results-title">No tools found</div>
+                <div class="no-results-subtitle">Try a different search term</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-footer">
+        <div class="keyboard-shortcuts">
+            <span class="shortcut-item"> <kbd>↑</kbd><kbd>↓</kbd> Navigate </span>
+            <span class="shortcut-item"> <kbd>Enter</kbd> Select </span>
+            <span class="shortcut-item"> <kbd>Esc</kbd> Close </span>
+        </div>
+    </div>
+</div>

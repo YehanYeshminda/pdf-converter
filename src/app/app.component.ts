@@ -9,11 +9,13 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ThemeService } from './theme.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { VisitorCounterService } from './services/visitor-counter.service';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 
 
 @Component({
@@ -28,6 +30,7 @@ import { filter } from 'rxjs/operators';
     MatSidenavModule,
     MatListModule,
     MatTooltipModule,
+    MatDialogModule,
     RouterModule
   ],
   templateUrl: './app.component.html',
@@ -45,7 +48,8 @@ export class App implements OnInit {
     private title: Title,
     private meta: Meta,
     private visitorCounter: VisitorCounterService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -112,6 +116,30 @@ export class App implements OnInit {
     if (this.sidenav.mode === 'over') {
       this.sidenav.close();
     }
+  }
+
+  onToolSelected() {
+    // Close sidenav on mobile when a tool is selected from search
+    if (this.sidenav.mode === 'over') {
+      this.sidenav.close();
+    }
+  }
+
+  openSearchDialog() {
+    const dialogRef = this.dialog.open(SearchBarComponent, {
+      width: '90vw',
+      maxWidth: '600px',
+      maxHeight: '80vh',
+      panelClass: 'search-dialog-panel',
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.componentInstance.toolSelected.subscribe(() => {
+      dialogRef.close();
+      this.onToolSelected();
+    });
   }
 
   private trackRouteChanges(): void {

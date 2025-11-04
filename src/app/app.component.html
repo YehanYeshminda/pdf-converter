@@ -9,6 +9,10 @@
     </div>
     <span class="spacer"></span>
 
+    <button mat-icon-button (click)="openSearchDialog()" aria-label="Search tools" matTooltip="Search tools (Ctrl+K)" class="search-trigger-btn">
+        <mat-icon>search</mat-icon>
+    </button>
+
     <div class="visitor-counter" matTooltip="Total visitors to this site">
         <mat-icon class="visitor-icon">visibility</mat-icon>
         <span *ngIf="visitorCount >= 0">{{ visitorCount | number }}</span>
@@ -78,11 +82,11 @@
 
             <mat-divider></mat-divider>
 
-            <!-- <h3 mat-subheader>About</h3>
-            <a mat-list-item>
+            <h3 mat-subheader>About</h3>
+            <a mat-list-item href="https://yehanyeshminda.netlify.app" target="_blank" rel="noopener">
                 <mat-icon matListItemIcon>info</mat-icon>
                 <span matListItemTitle>Help & Info</span>
-            </a> -->
+            </a>
         </mat-nav-list>
     </mat-sidenav>
 
