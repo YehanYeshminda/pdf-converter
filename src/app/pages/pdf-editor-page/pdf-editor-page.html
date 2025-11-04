@@ -77,6 +77,9 @@
                             <mat-button-toggle value="erase" matTooltip="Erase">
                                 <mat-icon>cleaning_services</mat-icon>
                             </mat-button-toggle>
+                            <mat-button-toggle value="text" matTooltip="Add Text">
+                                <mat-icon>text_fields</mat-icon>
+                            </mat-button-toggle>
                         </mat-button-toggle-group>
                     </div>
 
@@ -104,6 +107,21 @@
                             <mat-slider min="5" max="50" step="5" [(ngModel)]="eraserSize" color="accent">
                                 <input matSliderThumb name="eraserSize" />
                             </mat-slider>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-section" *ngIf="currentTool === 'text'">
+                        <h3>Text Settings</h3>
+                        <div class="text-settings">
+                            <div class="setting-group">
+                                <label>Font Size: {{ fontSize }}px</label>
+                                <mat-slider min="8" max="72" step="2" [(ngModel)]="fontSize" color="primary">
+                                    <input matSliderThumb name="fontSize" />
+                                </mat-slider>
+                            </div>
+                            <div class="color-palette">
+                                <button *ngFor="let color of colors" class="color-button" [style.background-color]="color.value" [class.selected]="textColor === color.value" (click)="textColor = color.value" [matTooltip]="color.name"></button>
+                            </div>
                         </div>
                     </div>
 
@@ -140,7 +158,22 @@
 
                 <!-- Canvas Area -->
                 <div class="canvas-container">
-                    <canvas #canvas class="drawing-canvas"></canvas>
+                    <canvas #canvas class="drawing-canvas" [class.text-mode]="currentTool === 'text'"></canvas>
+
+                    <!-- Text Input Overlay -->
+                    <div class="text-input-overlay" *ngIf="isAddingText">
+                        <mat-card class="text-input-card">
+                            <h3>Add Text</h3>
+                            <mat-form-field appearance="outline" class="text-input-field">
+                                <mat-label>Enter text</mat-label>
+                                <input matInput [(ngModel)]="textInput" name="textInput" (keyup.enter)="addTextToCanvas()" placeholder="Type your text here..." autofocus />
+                            </mat-form-field>
+                            <div class="text-input-actions">
+                                <button mat-button (click)="cancelTextInput()">Cancel</button>
+                                <button mat-raised-button color="primary" (click)="addTextToCanvas()">Add Text</button>
+                            </div>
+                        </mat-card>
+                    </div>
                 </div>
 
                 <mat-divider></mat-divider>

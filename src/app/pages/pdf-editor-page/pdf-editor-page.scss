@@ -141,7 +141,8 @@
 }
 
 .brush-settings,
-.eraser-settings {
+.eraser-settings,
+.text-settings {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -245,6 +246,7 @@
     overflow: auto;
     max-height: 800px;
     margin: 16px 0;
+    position: relative;
 }
 
 .drawing-canvas {
@@ -260,6 +262,46 @@
 
     &:active {
         cursor: crosshair;
+    }
+
+    &.text-mode {
+        cursor: text;
+    }
+}
+
+.text-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.text-input-card {
+    padding: 24px;
+    min-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    h3 {
+        margin: 0 0 16px 0;
+        color: #3f51b5;
+    }
+
+    .text-input-field {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    .text-input-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
     }
 }
 
@@ -371,7 +413,8 @@
     }
 
     .brush-settings,
-    .eraser-settings {
+    .eraser-settings,
+    .text-settings {
         min-width: 100%;
     }
 
@@ -382,6 +425,11 @@
 
     .drawing-canvas {
         max-width: 100%;
+    }
+
+    .text-input-card {
+        min-width: 90%;
+        max-width: 90%;
     }
 
     .pdf-navigation {

@@ -59,6 +59,13 @@ export class PdfEditorPage implements AfterViewInit {
     brushColor = '#FF0000';
     eraserSize = 20;
 
+    textColor = '#000000';
+    fontSize = 16;
+    textInput = '';
+    isAddingText = false;
+    private textX = 0;
+    private textY = 0;
+
     colors = [
         { name: 'Red', value: '#FF0000' },
         { name: 'Blue', value: '#0000FF' },
@@ -74,7 +81,6 @@ export class PdfEditorPage implements AfterViewInit {
     private historyStep = -1;
     private maxHistory = 20;
 
-    // Download format
     downloadFormat: 'pdf' | 'png' | 'jpeg' = 'png';
 
     constructor(private snackBar: MatSnackBar) { }
@@ -93,7 +99,6 @@ export class PdfEditorPage implements AfterViewInit {
     }
 
     private checkLibraries(): void {
-        // Check if jsPDF is loaded
         const win = window as any;
         if (!win.jspdf || !win.jspdf.jsPDF) {
             this.showMessage('⚠️ PDF export library not loaded yet. Please wait a moment.', 'warning');
@@ -149,6 +154,17 @@ export class PdfEditorPage implements AfterViewInit {
     }
 
     private startDrawing(e: MouseEvent): void {
+        if (this.currentTool === 'text') {
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = this.canvas.width / rect.width;
+            const scaleY = this.canvas.height / rect.height;
+            this.textX = (e.clientX - rect.left) * scaleX;
+            this.textY = (e.clientY - rect.top) * scaleY;
+            this.isAddingText = true;
+            this.textInput = '';
+            return;
+        }
+
         this.isDrawing = true;
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
@@ -284,7 +300,32 @@ export class PdfEditorPage implements AfterViewInit {
 
     selectColor(color: string): void {
         this.brushColor = color;
-        this.currentTool = 'draw';
+        this.textColor = color;
+        if (this.currentTool !== 'text') {
+            this.currentTool = 'draw';
+        }
+    }
+
+    addTextToCanvas(): void {
+        if (!this.textInput.trim()) {
+            this.isAddingText = false;
+            return;
+        }
+
+        this.ctx.font = `${this.fontSize}px Arial`;
+        this.ctx.fillStyle = this.textColor;
+        this.ctx.textBaseline = 'top';
+        this.ctx.fillText(this.textInput, this.textX, this.textY);
+
+        this.textInput = '';
+        this.isAddingText = false;
+        this.saveHistory();
+        this.showMessage('✅ Text added to canvas!', 'success');
+    }
+
+    cancelTextInput(): void {
+        this.textInput = '';
+        this.isAddingText = false;
     }
 
     clearCanvas(): void {
