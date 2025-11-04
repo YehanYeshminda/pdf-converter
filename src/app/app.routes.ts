@@ -34,5 +34,9 @@ export const routes: Routes = [
     {
         path: 'pdf-editor',
         loadComponent: () => import('./pages/pdf-editor-page/pdf-editor-page').then(m => m.PdfEditorPage)
+    },
+    {
+        path: 'pdf-splitter',
+        loadComponent: () => import('./pages/pdf-splitter-page/pdf-splitter-page').then(m => m.PdfSplitterPage)
     }
 ];

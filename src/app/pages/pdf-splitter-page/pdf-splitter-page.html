@@ -1,0 +1,156 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>PDF Splitter</h1>
+            <p class="subtitle">Split your PDF into individual pages or custom page ranges</p>
+        </div>
+
+        <div class="upload-section" [class.dragging]="isDragging" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+            <input #fileInput type="file" accept="application/pdf" (change)="onFileSelected($event)" style="display: none" />
+
+            <div class="upload-content" *ngIf="!pdfFile">
+                <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                <h2>Upload PDF File</h2>
+                <p>Drag and drop your PDF here or click to browse</p>
+                <button mat-raised-button color="primary" (click)="openFileDialog()">
+                    <mat-icon>upload_file</mat-icon>
+                    Choose PDF File
+                </button>
+            </div>
+
+            <div class="file-info" *ngIf="pdfFile">
+                <mat-icon class="file-icon">picture_as_pdf</mat-icon>
+                <div class="info-details">
+                    <h3>{{ fileName }}</h3>
+                    <p>{{ totalPages }} pages</p>
+                </div>
+                <button mat-icon-button color="warn" (click)="reset()" matTooltip="Remove file">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <mat-divider *ngIf="pdfFile"></mat-divider>
+
+        <div class="split-options" *ngIf="pdfFile">
+            <h2>Split Options</h2>
+
+            <mat-radio-group [(ngModel)]="splitMode" name="splitMode" (change)="onSplitModeChange()" class="split-mode-group">
+                <mat-radio-button value="each-page">
+                    <div class="radio-content">
+                        <mat-icon>splitscreen</mat-icon>
+                        <div>
+                            <strong>Split into Individual Pages</strong>
+                            <p>Each page becomes a separate PDF file</p>
+                        </div>
+                    </div>
+                </mat-radio-button>
+
+                <mat-radio-button value="by-range">
+                    <div class="radio-content">
+                        <mat-icon>bookmarks</mat-icon>
+                        <div>
+                            <strong>Split by Page Ranges</strong>
+                            <p>Define custom page ranges (e.g., 1-3, 5-7)</p>
+                        </div>
+                    </div>
+                </mat-radio-button>
+
+                <mat-radio-button value="custom-selection">
+                    <div class="radio-content">
+                        <mat-icon>check_box</mat-icon>
+                        <div>
+                            <strong>Custom Selection</strong>
+                            <p>Select specific pages visually</p>
+                        </div>
+                    </div>
+                </mat-radio-button>
+            </mat-radio-group>
+
+            <div class="range-input-section" *ngIf="splitMode === 'by-range'">
+                <mat-form-field appearance="outline" class="range-field">
+                    <mat-label>Page Ranges</mat-label>
+                    <input matInput [(ngModel)]="rangeInput" name="rangeInput" placeholder="e.g., 1-3, 5-7, 10" />
+                    <mat-icon matSuffix matTooltip="Enter page ranges separated by commas">help_outline</mat-icon>
+                </mat-form-field>
+                <div class="range-examples">
+                    <mat-chip-set>
+                        <mat-chip (click)="rangeInput = '1-3'">1-3</mat-chip>
+                        <mat-chip (click)="rangeInput = '1-5, 7-10'">1-5, 7-10</mat-chip>
+                        <mat-chip (click)="rangeInput = '1, 3, 5'">1, 3, 5</mat-chip>
+                    </mat-chip-set>
+                </div>
+            </div>
+
+            <div class="thumbnails-section" *ngIf="splitMode === 'custom-selection'">
+                <h3>Select Pages ({{ selectedPages.size }} selected)</h3>
+                <div class="thumbnails-grid">
+                    <div *ngFor="let thumbnail of pageThumbnails" class="thumbnail-item" [class.selected]="thumbnail.selected" (click)="togglePageSelection(thumbnail.pageNumber)">
+                        <img [src]="thumbnail.imageUrl" [alt]="'Page ' + thumbnail.pageNumber" />
+                        <div class="thumbnail-overlay" (click)="$event.stopPropagation()">
+                            <mat-checkbox [checked]="thumbnail.selected" (change)="togglePageSelection(thumbnail.pageNumber)"></mat-checkbox>
+                        </div>
+                        <div class="thumbnail-label">Page {{ thumbnail.pageNumber }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <button mat-raised-button color="accent" (click)="splitPDF()" [disabled]="isProcessing" class="split-button">
+                    <mat-icon>content_cut</mat-icon>
+                    Split PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="processing-section" *ngIf="isProcessing">
+            <mat-progress-bar mode="determinate" [value]="processingProgress" color="accent"></mat-progress-bar>
+            <p>Processing... {{ processingProgress | number:'1.0-0' }}%</p>
+        </div>
+
+        <mat-divider *ngIf="splitResults.length > 0"></mat-divider>
+
+        <div class="results-section" *ngIf="splitResults.length > 0">
+            <div class="results-header">
+                <h2>Split Results ({{ splitResults.length }} files)</h2>
+                <button mat-raised-button color="primary" (click)="downloadAllAsZip()">
+                    <mat-icon>folder_zip</mat-icon>
+                    Download All
+                </button>
+            </div>
+
+            <div class="results-grid">
+                <mat-card *ngFor="let result of splitResults" class="result-card">
+                    <div class="result-preview">
+                        <img [src]="result.previewUrl" [alt]="result.name" />
+                    </div>
+                    <div class="result-info">
+                        <h3>{{ result.name }}</h3>
+                        <p>Pages: {{ result.pages.join(', ') }}</p>
+                    </div>
+                    <div class="result-actions">
+                        <button mat-icon-button (click)="previewFile(result)" matTooltip="Preview">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" (click)="downloadFile(result)" matTooltip="Download">
+                            <mat-icon>download</mat-icon>
+                        </button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+        <div class="info-section">
+            <h3>How to Use PDF Splitter:</h3>
+            <ul>
+                <li><strong>Upload PDF:</strong> Drag & drop or click to select your PDF file</li>
+                <li><strong>Choose Split Mode:</strong> Select how you want to split your PDF</li>
+                <li><strong>Each Page:</strong> Automatically splits every page into a separate file</li>
+                <li><strong>By Range:</strong> Enter custom page ranges like "1-3, 5-7" to create specific splits</li>
+                <li><strong>Custom Selection:</strong> Visually select pages you want to extract</li>
+                <li><strong>Download:</strong> Preview individual files or download all at once</li>
+            </ul>
+        </div>
+    </mat-card>
+</div>

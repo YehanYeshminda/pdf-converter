@@ -180,6 +180,13 @@ export class App implements OnInit {
           content: 'Edit PDF files online with drawing and erasing tools. Annotate PDFs, remove sensitive information, and add custom notes. Free online PDF editor.'
         });
         break;
+      case '/pdf-splitter':
+        this.title.setTitle('PDF Splitter - Split PDF into Multiple Files Online');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Split PDF files into individual pages or custom page ranges. Extract specific pages, create multiple PDFs, and download instantly. Free online PDF splitter tool.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({
