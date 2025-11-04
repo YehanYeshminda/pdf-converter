@@ -222,6 +222,13 @@ export class App implements OnInit {
           content: 'Add electronic or handwritten signatures to PDF documents online. Draw, type, or upload your signature and place it on any page. Free online PDF signature tool.'
         });
         break;
+      case '/todo-list':
+        this.title.setTitle('Todo List - Task Manager with Notifications');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Manage your tasks with a powerful todo list. Set due dates, priorities, get browser notifications, and track your productivity. Free online task manager.'
+        });
+        break;
       default:
         this.title.setTitle('ToolVerse - Free Online Developer Tools');
         this.meta.updateTag({

@@ -88,6 +88,13 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             icon: 'schedule',
             category: 'Converters'
         },
+        // {
+        //     title: 'Todo List',
+        //     description: 'Create, track, and manage your tasks with due dates and notifications',
+        //     route: '/todo-list',
+        //     icon: 'task_alt',
+        //     category: 'Productivity'
+        // },
         {
             title: 'PDF Editor',
             description: 'Draw, annotate & erase PDF content',

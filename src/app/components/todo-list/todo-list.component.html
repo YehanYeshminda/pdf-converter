@@ -1,0 +1,211 @@
+<div class="todo-container">
+    <!-- Header Section -->
+    <div class="todo-header">
+        <h1 class="page-title">
+            <mat-icon>task_alt</mat-icon>
+            Todo List
+        </h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" *ngIf="stats$ | async as stats">
+            <mat-card class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-number">{{ stats.total }}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </mat-card>
+
+            <mat-card class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-number">{{ stats.pending }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </mat-card>
+
+            <mat-card class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-number">{{ stats.completed }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </mat-card>
+
+            <mat-card class="stat-card" *ngIf="stats.overdue > 0">
+                <div class="stat-content overdue">
+                    <div class="stat-number">{{ stats.overdue }}</div>
+                    <div class="stat-label">Overdue</div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <!-- Notification Permission Section -->
+    <mat-card class="notification-card" *ngIf="!notificationPermissionGranted && notificationService.isSupported()">
+        <div class="notification-content">
+            <mat-icon class="notification-icon">notifications</mat-icon>
+            <div class="notification-text">
+                <div class="notification-title">Enable Notifications</div>
+                <div class="notification-subtitle">Get notified when your todos are due</div>
+            </div>
+            <div class="notification-actions">
+                <button mat-button (click)="requestNotificationPermission()">Enable</button>
+                <button mat-icon-button (click)="testNotification()" matTooltip="Send test notification" *ngIf="notificationPermissionGranted">
+                    <mat-icon>notifications_active</mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-card>
+
+    <!-- Create Todo Section -->
+    <mat-card class="create-todo-card">
+        <div class="card-header">
+            <h2>Create New Todo</h2>
+        </div>
+
+        <form [formGroup]="todoForm" (ngSubmit)="onCreateTodo()">
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="title-field">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title" placeholder="What needs to be done?" />
+                    <mat-error *ngIf="todoForm.get('title')?.hasError('required')"> Title is required </mat-error>
+                    <mat-error *ngIf="todoForm.get('title')?.hasError('minlength')"> Title must be at least 2 characters </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="priority-field">
+                    <mat-label>Priority</mat-label>
+                    <mat-select formControlName="priority">
+                        <mat-option *ngFor="let priority of priorities" [value]="priority.value">
+                            <mat-icon [color]="priority.color">{{ getPriorityIcon(priority.value) }}</mat-icon>
+                            {{ priority.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description (optional)</mat-label>
+                <textarea matInput formControlName="description" rows="2" placeholder="Add details..."></textarea>
+            </mat-form-field>
+
+            <!-- Due Date Section with Quick Options -->
+            <div class="due-date-section">
+                <h4 class="section-title">Due Date (optional)</h4>
+
+                <!-- Quick Time Options -->
+                <div class="quick-time-options">
+                    <button *ngFor="let option of quickTimeOptions" type="button" mat-stroked-button class="quick-time-btn" (click)="onQuickTimeSelect(option)" [matTooltip]="option.label">
+                        <mat-icon>{{ option.icon }}</mat-icon>
+                        {{ option.label }}
+                    </button>
+                </div>
+
+                <!-- Material Date Picker -->
+                <mat-form-field appearance="outline" class="full-width date-picker-field">
+                    <mat-label>Custom Date & Time</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dueDate" placeholder="Choose custom date and time" />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-hint>Or use quick options above</mat-hint>
+                </mat-form-field>
+
+                <!-- Current Due Date Display -->
+                <div class="current-due-date" *ngIf="todoForm.get('dueDate')?.value">
+                    <mat-icon>schedule</mat-icon>
+                    <span>Due: {{ formatDateTime(todoForm.get('dueDate')?.value) }}</span>
+                    <button type="button" mat-icon-button (click)="todoForm.patchValue({ dueDate: null })" matTooltip="Clear due date">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="isCreating">
+                    <mat-icon *ngIf="!isCreating">add</mat-icon>
+                    <mat-icon *ngIf="isCreating" class="spinning">refresh</mat-icon>
+                    {{ isCreating ? 'Creating...' : 'Create Todo' }}
+                </button>
+            </div>
+        </form>
+    </mat-card>
+
+    <!-- Filter Section -->
+    <mat-card class="filter-card">
+        <div class="card-header">
+            <h3>Filters</h3>
+            <button mat-icon-button (click)="onClearCompleted()" matTooltip="Clear completed todos">
+                <mat-icon>clear_all</mat-icon>
+            </button>
+        </div>
+
+        <form [formGroup]="filterForm">
+            <div class="filter-row">
+                <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Search todos</mat-label>
+                    <input matInput formControlName="search" placeholder="Search by title or description" />
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="priority-filter">
+                    <mat-label>Filter by Priority</mat-label>
+                    <mat-select formControlName="priority">
+                        <mat-option value="">All Priorities</mat-option>
+                        <mat-option *ngFor="let priority of priorities" [value]="priority.value">
+                            <mat-icon [color]="priority.color">{{ getPriorityIcon(priority.value) }}</mat-icon>
+                            {{ priority.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-checkbox formControlName="showCompleted" class="show-completed"> Show Completed </mat-checkbox>
+            </div>
+        </form>
+    </mat-card>
+
+    <!-- Todo List Section -->
+    <div class="todo-list-section">
+        <div class="todo-items" *ngIf="todos$ | async as todos">
+            <div *ngIf="todos.length === 0" class="empty-state">
+                <mat-icon class="empty-icon">task_alt</mat-icon>
+                <h3>No todos found</h3>
+                <p>Create your first todo or adjust your filters</p>
+            </div>
+
+            <mat-card *ngFor="let todo of todos; trackBy: trackByTodoId" class="todo-item" [class.completed]="todo.completed" [class.overdue]="todo.dueDate && isOverdue(todo.dueDate) && !todo.completed" [class.due-today]="todo.dueDate && isDueToday(todo.dueDate) && !todo.completed">
+                <div class="todo-content">
+                    <div class="todo-main">
+                        <mat-checkbox [checked]="todo.completed" (change)="onToggleTodo(todo)" class="todo-checkbox"> </mat-checkbox>
+
+                        <div class="todo-details">
+                            <div class="todo-title" [class.completed-text]="todo.completed">
+                                {{ todo.title }}
+                            </div>
+
+                            <div class="todo-description" *ngIf="todo.description">
+                                {{ todo.description }}
+                            </div>
+
+                            <div class="todo-meta">
+                                <mat-chip class="priority-chip" [color]="getPriorityColor(todo.priority)">
+                                    <mat-icon>{{ getPriorityIcon(todo.priority) }}</mat-icon>
+                                    {{ todo.priority }}
+                                </mat-chip>
+
+                                <span class="due-date" *ngIf="todo.dueDate">
+                                    <mat-icon class="date-icon">schedule</mat-icon>
+                                    {{ formatDueDate(todo.dueDate) }}
+                                </span>
+
+                                <span class="created-date"> Created {{ todo.createdAt | date : 'short' }} </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="todo-actions">
+                        <button mat-icon-button (click)="onDeleteTodo(todo)" matTooltip="Delete todo" class="delete-btn">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,491 @@
+.todo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    min-height: 100vh;
+}
+
+.todo-header {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    color: var(--mat-text-primary);
+
+    mat-icon {
+        font-size: 2rem;
+        height: 2rem;
+        width: 2rem;
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    padding: 16px;
+    text-align: center;
+
+    .stat-content {
+        &.overdue {
+            color: var(--mat-warn-color);
+        }
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+.notification-card {
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .notification-icon {
+        font-size: 2rem;
+        height: 2rem;
+        width: 2rem;
+        opacity: 0.9;
+    }
+
+    .notification-text {
+        flex: 1;
+    }
+
+    .notification-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .notification-subtitle {
+        opacity: 0.9;
+        font-size: 0.875rem;
+    }
+
+    .notification-actions {
+        display: flex;
+        gap: 8px;
+
+        button {
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
+.create-todo-card,
+.filter-card {
+    margin-bottom: 24px;
+
+    .card-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h2,
+        h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+    }
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    .title-field {
+        flex: 2;
+    }
+
+    .priority-field {
+        flex: 1;
+        min-width: 140px;
+    }
+}
+
+.filter-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .search-field {
+        flex: 2;
+        min-width: 200px;
+    }
+
+    .priority-filter {
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .show-completed {
+        margin-left: auto;
+    }
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.due-date-section {
+    margin-bottom: 24px;
+
+    .section-title {
+        margin: 0 0 16px 0;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--mat-text-primary);
+    }
+}
+
+.quick-time-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .quick-time-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: auto;
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+
+        mat-icon {
+            font-size: 16px;
+            height: 16px;
+            width: 16px;
+        }
+
+        &:hover {
+            background-color: var(--mat-primary-color);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+.date-picker-field {
+    margin-bottom: 12px;
+}
+
+.current-due-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: rgba(var(--mat-primary-rgb), 0.1);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    color: var(--mat-primary-color);
+    font-size: 0.9rem;
+
+    mat-icon {
+        font-size: 18px;
+        height: 18px;
+        width: 18px;
+    }
+
+    span {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    button {
+        color: var(--mat-text-secondary);
+
+        &:hover {
+            color: var(--mat-warn-color);
+        }
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    button {
+        min-width: 120px;
+    }
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.todo-list-section {
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+        color: var(--mat-text-secondary);
+
+        .empty-icon {
+            font-size: 4rem;
+            height: 4rem;
+            width: 4rem;
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            margin: 0 0 8px 0;
+            font-weight: 500;
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.8;
+        }
+    }
+}
+
+.todo-item {
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    &.completed {
+        opacity: 0.7;
+        border-left-color: var(--mat-primary-color);
+    }
+
+    &.overdue {
+        border-left-color: var(--mat-warn-color);
+        background-color: rgba(244, 67, 54, 0.02);
+    }
+
+    &.due-today {
+        border-left-color: #ff9800;
+        background-color: rgba(255, 152, 0, 0.02);
+    }
+}
+
+.todo-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+}
+
+.todo-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex: 1;
+}
+
+.todo-checkbox {
+    margin-top: 2px;
+}
+
+.todo-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.todo-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+
+    &.completed-text {
+        text-decoration: line-through;
+        opacity: 0.7;
+    }
+}
+
+.todo-description {
+    color: var(--mat-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.todo-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.875rem;
+    color: var(--mat-text-secondary);
+}
+
+.priority-chip {
+    font-size: 0.75rem;
+    height: 24px;
+
+    mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+        margin-right: 4px;
+    }
+}
+
+.due-date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .date-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+    }
+}
+
+.created-date {
+    opacity: 0.7;
+}
+
+.todo-actions {
+    display: flex;
+    gap: 8px;
+
+    .delete-btn {
+        color: var(--mat-warn-color);
+
+        &:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+    }
+}
+
+// Dark theme adjustments
+:host-context(.dark-theme) {
+    .notification-card {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    }
+
+    .todo-item {
+        &.overdue {
+            background-color: rgba(244, 67, 54, 0.05);
+        }
+
+        &.due-today {
+            background-color: rgba(255, 152, 0, 0.05);
+        }
+    }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+    .todo-container {
+        padding: 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+
+        .show-completed {
+            margin-left: 0;
+            align-self: flex-start;
+        }
+    }
+
+    .quick-time-options {
+        .quick-time-btn {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+
+            mat-icon {
+                font-size: 14px;
+                height: 14px;
+                width: 14px;
+            }
+        }
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .todo-content {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .todo-main {
+        flex-direction: row;
+    }
+
+    .todo-actions {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+
+        mat-icon {
+            font-size: 1.5rem;
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+    }
+}

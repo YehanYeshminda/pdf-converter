@@ -47,24 +47,22 @@ interface SplitResult {
 export class PdfSplitterPage {
     @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
-    // PDF file state
     pdfFile: File | null = null;
     pdfDoc: any = null;
     fileName = '';
     totalPages = 0;
     isDragging = false;
 
-    // Split options
     splitMode: 'each-page' | 'by-range' | 'custom-selection' = 'each-page';
     rangeInput = '';
     selectedPages: Set<number> = new Set();
     pageThumbnails: { pageNumber: number; imageUrl: string; selected: boolean }[] = [];
 
-    // Processing state
+    smartRecommendations: { label: string; range: string; description: string; icon: string }[] = [];
+
     isProcessing = false;
     processingProgress = 0;
 
-    // Results
     splitResults: SplitResult[] = [];
 
     constructor(private snackBar: MatSnackBar) { }
@@ -134,7 +132,8 @@ export class PdfSplitterPage {
         this.pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         this.totalPages = this.pdfDoc.numPages;
 
-        // Generate thumbnails for custom selection mode
+        this.generateSmartRecommendations();
+
         if (this.splitMode === 'custom-selection') {
             await this.generateThumbnails();
         }
@@ -160,6 +159,111 @@ export class PdfSplitterPage {
                 selected: false
             });
         }
+    }
+
+    generateSmartRecommendations(): void {
+        this.smartRecommendations = [];
+
+        if (this.totalPages <= 1) {
+            return;
+        }
+
+        this.smartRecommendations.push({
+            label: 'First Page Only',
+            range: '1',
+            description: 'Extract just the first page',
+            icon: 'first_page'
+        });
+
+        if (this.totalPages > 2) {
+            this.smartRecommendations.push({
+                label: 'First Half',
+                range: `1-${Math.ceil(this.totalPages / 2)}`,
+                description: `Pages 1 to ${Math.ceil(this.totalPages / 2)}`,
+                icon: 'first_page'
+            });
+
+            this.smartRecommendations.push({
+                label: 'Second Half',
+                range: `${Math.ceil(this.totalPages / 2) + 1}-${this.totalPages}`,
+                description: `Pages ${Math.ceil(this.totalPages / 2) + 1} to ${this.totalPages}`,
+                icon: 'last_page'
+            });
+        }
+
+        if (this.totalPages >= 5) {
+            this.smartRecommendations.push({
+                label: 'First 5 Pages',
+                range: '1-5',
+                description: 'Extract the first 5 pages',
+                icon: 'filter_5'
+            });
+        }
+
+        if (this.totalPages >= 10) {
+            this.smartRecommendations.push({
+                label: 'Every 2nd Page',
+                range: this.generateEveryNthPageRange(2),
+                description: 'Extract every second page',
+                icon: 'filter_2'
+            });
+
+            this.smartRecommendations.push({
+                label: 'Every 5th Page',
+                range: this.generateEveryNthPageRange(5),
+                description: 'Extract every fifth page',
+                icon: 'filter_5'
+            });
+        }
+
+        if (this.totalPages >= 20) {
+            const chapterSize = Math.ceil(this.totalPages / 4);
+            this.smartRecommendations.push({
+                label: 'Split into 4 Chapters',
+                range: this.generateChapterRanges(4),
+                description: `Split into 4 equal parts (~${chapterSize} pages each)`,
+                icon: 'auto_stories'
+            });
+        }
+
+        if (this.totalPages >= 30) {
+            this.smartRecommendations.push({
+                label: 'Skip First & Last',
+                range: `2-${this.totalPages - 1}`,
+                description: 'Remove cover and back page',
+                icon: 'content_cut'
+            });
+        }
+
+        this.smartRecommendations.push({
+            label: 'Last Page Only',
+            range: this.totalPages.toString(),
+            description: 'Extract just the last page',
+            icon: 'last_page'
+        });
+    }
+
+    private generateEveryNthPageRange(n: number): string {
+        const pages: number[] = [];
+        for (let i = n; i <= this.totalPages; i += n) {
+            pages.push(i);
+        }
+        return pages.join(', ');
+    }
+
+    private generateChapterRanges(chapters: number): string {
+        const chapterSize = Math.ceil(this.totalPages / chapters);
+        const ranges: string[] = [];
+
+        for (let i = 0; i < chapters; i++) {
+            const start = i * chapterSize + 1;
+            const end = Math.min((i + 1) * chapterSize, this.totalPages);
+            if (start <= this.totalPages) {
+                ranges.push(`${start}-${end}`);
+            }
+        }
+
+        return ranges.join(', ');
     }
 
     async onSplitModeChange(): Promise<void> {
@@ -397,6 +501,11 @@ export class PdfSplitterPage {
         this.selectedPages.clear();
         this.rangeInput = '';
         this.splitMode = 'each-page';
+        this.smartRecommendations = [];
+
+        if (this.fileInput && this.fileInput.nativeElement) {
+            this.fileInput.nativeElement.value = '';
+        }
     }
 
     private showMessage(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info'): void {

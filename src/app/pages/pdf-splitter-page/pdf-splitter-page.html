@@ -74,11 +74,24 @@
                     <mat-icon matSuffix matTooltip="Enter page ranges separated by commas">help_outline</mat-icon>
                 </mat-form-field>
                 <div class="range-examples">
-                    <mat-chip-set>
-                        <mat-chip (click)="rangeInput = '1-3'">1-3</mat-chip>
-                        <mat-chip (click)="rangeInput = '1-5, 7-10'">1-5, 7-10</mat-chip>
-                        <mat-chip (click)="rangeInput = '1, 3, 5'">1, 3, 5</mat-chip>
-                    </mat-chip-set>
+                    <div class="examples-header">
+                        <h4>Smart Recommendations ({{ totalPages }} pages total):</h4>
+                    </div>
+                    <div class="recommendations-grid">
+                        <mat-chip *ngFor="let rec of smartRecommendations" (click)="rangeInput = rec.range" [matTooltip]="rec.description" class="smart-chip">
+                            <mat-icon>{{ rec.icon }}</mat-icon>
+                            {{ rec.label }}
+                        </mat-chip>
+                    </div>
+
+                    <div class="basic-examples" *ngIf="smartRecommendations.length === 0">
+                        <h4>Basic Examples:</h4>
+                        <mat-chip-set>
+                            <mat-chip (click)="rangeInput = '1-3'">1-3</mat-chip>
+                            <mat-chip (click)="rangeInput = '1-5, 7-10'">1-5, 7-10</mat-chip>
+                            <mat-chip (click)="rangeInput = '1, 3, 5'">1, 3, 5</mat-chip>
+                        </mat-chip-set>
+                    </div>
                 </div>
             </div>
 
