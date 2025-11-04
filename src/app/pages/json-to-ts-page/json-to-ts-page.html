@@ -1,20 +1,33 @@
 <div class="page-container">
     <mat-card class="main-card">
         <div class="card-header">
-            <h1>JSON to TypeScript Converter</h1>
-            <p class="subtitle">Convert JSON objects to TypeScript interfaces instantly. All processing is done locally in your browser.</p>
+            <h1>JSON to Code Converter</h1>
+            <p class="subtitle">Convert JSON objects to TypeScript, C#, Python, Java, Go, Rust, or Kotlin code instantly. All processing is done locally in your browser.</p>
         </div>
 
         <div class="converter-container">
             <div class="options-row">
+                <mat-form-field appearance="outline" class="language-select">
+                    <mat-label>Output Language</mat-label>
+                    <mat-select [(ngModel)]="outputLanguage" (ngModelChange)="changeOutputLanguage()">
+                        <mat-option value="typescript">TypeScript</mat-option>
+                        <mat-option value="csharp">C#</mat-option>
+                        <mat-option value="python">Python</mat-option>
+                        <mat-option value="java">Java</mat-option>
+                        <mat-option value="go">Go</mat-option>
+                        <mat-option value="rust">Rust</mat-option>
+                        <mat-option value="kotlin">Kotlin</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
                 <mat-form-field appearance="outline" class="interface-name-field">
-                    <mat-label>Root Interface Name</mat-label>
+                    <mat-label> {{ outputLanguage === 'typescript' ? 'Root Interface Name' : outputLanguage === 'go' ? 'Root Struct Name' : outputLanguage === 'rust' ? 'Root Struct Name' : 'Root Class Name' }} </mat-label>
                     <input matInput [(ngModel)]="interfaceName" placeholder="RootObject" />
                 </mat-form-field>
 
                 <div class="options-checkboxes">
-                    <mat-checkbox [(ngModel)]="useOptionalFields" (change)="convert()"> Optional Fields (?) </mat-checkbox>
-                    <mat-checkbox [(ngModel)]="useReadonly" (change)="convert()"> Readonly Properties </mat-checkbox>
+                    <mat-checkbox [(ngModel)]="useOptionalFields" (change)="convert()"> {{ outputLanguage === 'typescript' ? 'Optional Fields (?)' : outputLanguage === 'go' ? 'Pointer Fields (*)' : outputLanguage === 'python' ? 'Optional Type Hints' : 'Nullable Properties (?)' }} </mat-checkbox>
+                    <mat-checkbox *ngIf="outputLanguage === 'typescript'" [(ngModel)]="useReadonly" (change)="convert()"> Readonly Properties </mat-checkbox>
                 </div>
 
                 <button mat-raised-button color="accent" (click)="loadSampleJson()">
@@ -27,7 +40,7 @@
                 <div class="input-section">
                     <div class="section-header">
                         <h3>JSON Input</h3>
-                        <button mat-icon-button color="primary" (click)="convert()" matTooltip="Convert to TypeScript">
+                        <button mat-icon-button color="primary" (click)="convert()" matTooltip="Convert JSON">
                             <mat-icon>play_arrow</mat-icon>
                         </button>
                     </div>
@@ -42,13 +55,28 @@
 
                 <div class="output-section">
                     <div class="section-header">
-                        <h3>TypeScript Output</h3>
+                        <h3>{{ outputLanguage === 'typescript' ? 'TypeScript Output' : outputLanguage === 'csharp' ? 'C# Output' : outputLanguage === 'python' ? 'Python Output' : outputLanguage === 'java' ? 'Java Output' : outputLanguage === 'go' ? 'Go Output' : outputLanguage === 'rust' ? 'Rust Output' : outputLanguage === 'kotlin' ? 'Kotlin Output' : 'Code Output' }}</h3>
                         <button mat-icon-button color="primary" (click)="copyOutput()" [disabled]="!tsOutput || tsOutput.startsWith('// Error')" matTooltip="Copy to clipboard">
                             <mat-icon>content_copy</mat-icon>
                         </button>
                     </div>
                     <mat-form-field appearance="outline" class="text-area-field">
-                        <textarea matInput [(ngModel)]="tsOutput" placeholder="TypeScript interfaces will appear here..." rows="20" readonly class="text-area ts-output"> </textarea>
+                        <textarea
+                            matInput
+                            [(ngModel)]="tsOutput"
+                            [placeholder]="outputLanguage === 'typescript' ? 'TypeScript interfaces will appear here...' : 
+                                          outputLanguage === 'csharp' ? 'C# classes will appear here...' :
+                                          outputLanguage === 'python' ? 'Python classes will appear here...' :
+                                          outputLanguage === 'java' ? 'Java classes will appear here...' :
+                                          outputLanguage === 'go' ? 'Go structs will appear here...' :
+                                          outputLanguage === 'rust' ? 'Rust structs will appear here...' :
+                                          outputLanguage === 'kotlin' ? 'Kotlin data classes will appear here...' :
+                                          'Generated code will appear here...'"
+                            rows="20"
+                            readonly
+                            class="text-area ts-output"
+                        >
+                        </textarea>
                     </mat-form-field>
                 </div>
             </div>
@@ -69,12 +97,25 @@
             <div class="info-section">
                 <h3>Features:</h3>
                 <ul>
+                    <li><strong>7 Popular Languages:</strong> Convert to TypeScript, C#, Python, Java, Go, Rust, or Kotlin</li>
                     <li><strong>Automatic Type Detection:</strong> Detects string, number, boolean, array, and object types</li>
-                    <li><strong>Nested Objects:</strong> Generates separate interfaces for nested objects and arrays</li>
-                    <li><strong>Optional Fields:</strong> Toggle to make all fields optional with the ? modifier</li>
-                    <li><strong>Readonly Properties:</strong> Make all properties readonly for immutable data structures</li>
-                    <li><strong>Custom Naming:</strong> Specify your own root interface name</li>
+                    <li><strong>Nested Objects:</strong> Generates separate interfaces/classes/structs for nested objects and arrays</li>
+                    <li><strong>Optional/Nullable Fields:</strong> Toggle for optional (TS), nullable (C#/Kotlin), pointers (Go), or Option (Rust)</li>
+                    <li><strong>Readonly Properties:</strong> (TypeScript only) Make all properties readonly for immutable data structures</li>
+                    <li><strong>Custom Naming:</strong> Specify your own root interface/class/struct name</li>
                     <li><strong>Real-time Conversion:</strong> Automatically converts as you type</li>
+                    <li>
+                        <strong>Language-Specific Features:</strong>
+                        <ul>
+                            <li><strong>TypeScript:</strong> Interfaces with optional and readonly modifiers</li>
+                            <li><strong>C#:</strong> Classes with properties and List&lt;T&gt;</li>
+                            <li><strong>Python:</strong> Classes with type hints (str, int, float, bool, List, Optional)</li>
+                            <li><strong>Java:</strong> Classes with private fields and getters/setters</li>
+                            <li><strong>Go:</strong> Structs with json tags and pointer support</li>
+                            <li><strong>Rust:</strong> Structs with Serde derive macros (Serialize, Deserialize)</li>
+                            <li><strong>Kotlin:</strong> Data classes with val properties</li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

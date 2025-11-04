@@ -1,0 +1,177 @@
+<div class="page-container">
+    <mat-card class="main-card">
+        <div class="card-header">
+            <h1>PDF Editor</h1>
+            <p class="subtitle">Draw, annotate, and erase content on PDF pages. Upload a PDF or start with a blank canvas.</p>
+        </div>
+
+        <div class="editor-container">
+            <!-- Initial Options (shown when canvas is not initialized) -->
+            <div class="initial-options" *ngIf="!canvasInitialized">
+                <h2>Choose an Option to Get Started</h2>
+                <div class="option-cards">
+                    <mat-card class="option-card" (click)="openFileDialog()">
+                        <mat-icon class="option-icon">upload_file</mat-icon>
+                        <h3>Upload PDF</h3>
+                        <p>Upload a PDF file to annotate, edit, or redact content</p>
+                        <button mat-raised-button color="primary">
+                            <mat-icon>upload</mat-icon>
+                            Choose PDF File
+                        </button>
+                    </mat-card>
+
+                    <mat-card class="option-card" (click)="startBlankCanvas()">
+                        <mat-icon class="option-icon">draw</mat-icon>
+                        <h3>Draw on Canvas</h3>
+                        <p>Start with a blank canvas to draw, sketch, or create annotations</p>
+                        <button mat-raised-button color="accent">
+                            <mat-icon>brush</mat-icon>
+                            Start Drawing
+                        </button>
+                    </mat-card>
+                </div>
+            </div>
+
+            <input #fileInput type="file" accept="application/pdf" (change)="onFileSelected($event)" style="display: none" />
+
+            <div class="editor-interface" *ngIf="canvasInitialized">
+                <div class="toolbar">
+                    <div class="toolbar-section">
+                        <h3>File</h3>
+                        <button mat-raised-button color="primary" (click)="openFileDialog()">
+                            <mat-icon>upload_file</mat-icon>
+                            Upload PDF
+                        </button>
+                    </div>
+
+                    <mat-divider [vertical]="true"></mat-divider>
+
+                    <div class="toolbar-section">
+                        <h3>Download</h3>
+                        <div class="download-controls">
+                            <mat-form-field appearance="outline" class="format-field-compact">
+                                <mat-select [(ngModel)]="downloadFormat" name="downloadFormat">
+                                    <mat-option value="pdf">PDF</mat-option>
+                                    <mat-option value="png">PNG</mat-option>
+                                    <mat-option value="jpeg">JPEG</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button mat-raised-button color="accent" (click)="downloadCanvas()" matTooltip="Download current page">
+                                <mat-icon>download</mat-icon>
+                            </button>
+                            <button mat-raised-button color="accent" (click)="downloadAllPages()" *ngIf="totalPages > 1" matTooltip="Download all pages">
+                                <mat-icon>download</mat-icon>
+                                All
+                            </button>
+                        </div>
+                    </div>
+
+                    <mat-divider [vertical]="true"></mat-divider>
+
+                    <div class="toolbar-section">
+                        <h3>Tools</h3>
+                        <mat-button-toggle-group [value]="currentTool" (change)="currentTool = $event.value; selectTool(currentTool)">
+                            <mat-button-toggle value="draw" matTooltip="Draw">
+                                <mat-icon>brush</mat-icon>
+                            </mat-button-toggle>
+                            <mat-button-toggle value="erase" matTooltip="Erase">
+                                <mat-icon>cleaning_services</mat-icon>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+
+                    <mat-divider [vertical]="true"></mat-divider>
+
+                    <div class="toolbar-section" *ngIf="currentTool === 'draw'">
+                        <h3>Brush Settings</h3>
+                        <div class="brush-settings">
+                            <div class="setting-group">
+                                <label>Size: {{ brushSize }}px</label>
+                                <mat-slider min="1" max="20" step="1" [(ngModel)]="brushSize" color="primary">
+                                    <input matSliderThumb name="brushSize" />
+                                </mat-slider>
+                            </div>
+                            <div class="color-palette">
+                                <button *ngFor="let color of colors" class="color-button" [style.background-color]="color.value" [class.selected]="brushColor === color.value" (click)="selectColor(color.value)" [matTooltip]="color.name"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-section" *ngIf="currentTool === 'erase'">
+                        <h3>Eraser Settings</h3>
+                        <div class="eraser-settings">
+                            <label>Size: {{ eraserSize }}px</label>
+                            <mat-slider min="5" max="50" step="5" [(ngModel)]="eraserSize" color="accent">
+                                <input matSliderThumb name="eraserSize" />
+                            </mat-slider>
+                        </div>
+                    </div>
+
+                    <mat-divider [vertical]="true"></mat-divider>
+
+                    <div class="toolbar-section">
+                        <h3>Actions</h3>
+                        <div class="action-buttons">
+                            <button mat-icon-button (click)="undo()" [disabled]="!canUndo()" matTooltip="Undo (Ctrl+Z)">
+                                <mat-icon>undo</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="redo()" [disabled]="!canRedo()" matTooltip="Redo (Ctrl+Y)">
+                                <mat-icon>redo</mat-icon>
+                            </button>
+                            <button mat-icon-button color="warn" (click)="clearCanvas()" matTooltip="Reset to Initial State">
+                                <mat-icon>restart_alt</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <!-- PDF Navigation -->
+                <div class="pdf-navigation" *ngIf="totalPages > 0">
+                    <button mat-icon-button (click)="previousPage()" [disabled]="currentPage <= 1" matTooltip="Previous Page">
+                        <mat-icon>navigate_before</mat-icon>
+                    </button>
+                    <span class="page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
+                    <button mat-icon-button (click)="nextPage()" [disabled]="currentPage >= totalPages" matTooltip="Next Page">
+                        <mat-icon>navigate_next</mat-icon>
+                    </button>
+                </div>
+
+                <!-- Canvas Area -->
+                <div class="canvas-container">
+                    <canvas #canvas class="drawing-canvas"></canvas>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <!-- Info Section -->
+                <div class="info-section">
+                    <h3>How to Use:</h3>
+                    <ul>
+                        <li><strong>Upload PDF:</strong> Click "Upload PDF" to load a PDF file. Navigate between pages using the navigation buttons.</li>
+                        <li><strong>Multi-Page Editing:</strong> Edit any page, then navigate to other pages. Your edits are automatically saved and will be preserved when you return!</li>
+                        <li><strong>Draw Tool:</strong> Select the brush tool to draw annotations on the PDF. Choose your preferred color and brush size.</li>
+                        <li><strong>Erase Tool:</strong> Select the eraser tool to remove content or annotations. Adjust the eraser size as needed.</li>
+                        <li><strong>Undo/Redo:</strong> Use undo/redo buttons to revert or reapply changes.</li>
+                        <li><strong>Clear Canvas:</strong> Remove all annotations while keeping the PDF page intact.</li>
+                        <li><strong>Download Current Page:</strong> Download just the current edited page in your chosen format.</li>
+                        <li><strong>Download All Pages:</strong> Export all pages (edited and unedited) as a single PDF or multiple images in original order.</li>
+                        <li><strong>Touch Support:</strong> Works on touch devices - draw with your finger or stylus.</li>
+                    </ul>
+
+                    <div class="tips-section">
+                        <h4><mat-icon>tips_and_updates</mat-icon> Pro Tips:</h4>
+                        <mat-chip-set>
+                            <mat-chip>Edits are preserved when navigating between pages</mat-chip>
+                            <mat-chip>Use smaller brush sizes for precise annotations</mat-chip>
+                            <mat-chip>Red color is great for highlighting errors</mat-chip>
+                            <mat-chip>Use the eraser to remove sensitive information</mat-chip>
+                            <mat-chip>Download all pages keeps your edits in correct order</mat-chip>
+                        </mat-chip-set>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>

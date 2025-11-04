@@ -30,5 +30,9 @@ export const routes: Routes = [
     {
         path: 'timestamp-converter',
         loadComponent: () => import('./pages/timestamp-converter-page/timestamp-converter-page').then(m => m.TimestampConverterPage)
+    },
+    {
+        path: 'pdf-editor',
+        loadComponent: () => import('./pages/pdf-editor-page/pdf-editor-page').then(m => m.PdfEditorPage)
     }
 ];

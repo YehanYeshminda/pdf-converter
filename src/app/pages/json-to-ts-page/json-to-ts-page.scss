@@ -36,6 +36,11 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
 
+    .language-select {
+        width: 180px;
+        margin-bottom: 0;
+    }
+
     .interface-name-field {
         width: 250px;
         margin-bottom: 0;
@@ -182,6 +187,7 @@
         flex-direction: column;
         align-items: stretch;
 
+        .language-select,
         .interface-name-field {
             width: 100%;
         }

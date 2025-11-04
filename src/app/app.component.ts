@@ -52,7 +52,7 @@ export class App implements OnInit {
     this.isDark = this.theme.isDark();
     this.theme.applyClass(this.isDark);
     this.fetchVisitorCount();
-    this.updateCounter();
+    // this.updateCounter();
     this.setupResponsiveSidenav();
     this.trackRouteChanges();
     this.updateSEOBasedOnRoute();
@@ -146,10 +146,10 @@ export class App implements OnInit {
         });
         break;
       case '/json-to-typescript':
-        this.title.setTitle('JSON to TypeScript Converter - Generate TypeScript Interfaces');
+        this.title.setTitle('JSON to Code Converter - TypeScript, C#, Python, Java, Go, Rust, Kotlin');
         this.meta.updateTag({
           name: 'description',
-          content: 'Convert JSON objects to TypeScript interfaces instantly. Generate typed interfaces with optional fields, readonly properties, and nested types.'
+          content: 'Convert JSON to TypeScript, C#, Python, Java, Go, Rust, or Kotlin code instantly. Generate typed interfaces, classes, and structs with optional fields and nested types.'
         });
         break;
       case '/jwt-decoder':
@@ -171,6 +171,13 @@ export class App implements OnInit {
         this.meta.updateTag({
           name: 'description',
           content: 'Convert Unix timestamps to dates and vice versa. Compare dates, calculate relative time, and convert between timezones. Free online timestamp converter.'
+        });
+        break;
+      case '/pdf-editor':
+        this.title.setTitle('PDF Editor - Draw, Annotate & Erase PDF Content Online');
+        this.meta.updateTag({
+          name: 'description',
+          content: 'Edit PDF files online with drawing and erasing tools. Annotate PDFs, remove sensitive information, and add custom notes. Free online PDF editor.'
         });
         break;
       default:

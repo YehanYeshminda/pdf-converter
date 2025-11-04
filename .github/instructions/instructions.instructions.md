@@ -1,178 +1,221 @@
-# Instructions for Writing Clean, Performant, and Better Code
+🧭 Angular Clean Code & Performance Guidelines
 
-This document provides guidelines for writing high-quality code that is clean, performant, and maintainable. These instructions are applicable to general programming practices across various languages and frameworks.
+These instructions define how to write clean, performant, and maintainable Angular code — especially for projects built with Angular 19+, TypeScript 5+, RxJS 7+, TailwindCSS, and Capacitor.
 
-## 1. Clean Code Principles
+1️⃣ Clean Angular Code Principles
+🔤 Naming Conventions
 
-Clean code is readable, maintainable, and easy to understand. Follow these principles to achieve it:
+Components: Use PascalCase and end with Component (e.g., PdfViewerComponent)
 
-### Naming Conventions
+Services: Use PascalCase and end with Service (e.g., AuthService)
 
-- Use descriptive, meaningful names for variables, functions, classes, and files
-- Avoid abbreviations unless they are widely understood (e.g., `url` instead of `uniformResourceLocator`)
-- Use camelCase for variables and functions in JavaScript/TypeScript
-- Use PascalCase for classes and interfaces
-- Use UPPER_CASE for constants
+Directives: Use PascalCase and end with Directive
 
-### Function Design
+Pipes: Use PascalCase and end with Pipe
 
-- Keep functions small and focused on a single responsibility
-- Aim for functions that fit on a single screen (typically 10-20 lines)
-- Use descriptive function names that clearly indicate their purpose
-- Limit function parameters to 3 or fewer; use objects for multiple parameters if needed
+Variables / Methods: Use camelCase
 
-### Code Structure
+Constants: Use UPPER_SNAKE_CASE
 
-- Organize code into logical modules and packages
-- Use consistent indentation and formatting
-- Group related functionality together
-- Avoid deep nesting (limit to 3 levels max)
+Selectors: Use app- prefix (e.g., <app-header>)
 
-### Documentation
+🧩 Component Design
 
-- Write self-documenting code through good naming and structure
-- Add comments for complex logic or business rules
-- Use JSDoc or similar for public APIs
-- Keep comments up-to-date with code changes
+Keep each component focused on one UI responsibility
 
-### Code Quality
+Avoid large components; prefer splitting into smaller reusable ones
 
-- Eliminate code duplication through abstraction
-- Follow the DRY (Don't Repeat Yourself) principle
-- Use consistent coding style across the project
-- Remove unused code and imports
+Use @Input() and @Output() cleanly — no business logic in templates
 
-## 2. Performance Optimization
+Use ChangeDetectionStrategy.OnPush for stateless components
 
-Performance optimization ensures your code runs efficiently and scales well. Focus on these areas:
+Handle data fetching inside services, not components
 
-### Algorithm Efficiency
+📁 Project Structure
 
-- Choose the right algorithm for the task (consider Big O notation)
-- Prefer O(n log n) over O(n²) when possible
-- Use built-in functions and libraries that are optimized
-- Avoid unnecessary loops and computations
+Follow Angular style guide structure:
 
-### Data Structures
+src/app/
+ ├── core/             → Singleton services, interceptors, guards
+ ├── shared/           → Reusable UI components, pipes, directives
+ ├── features/         → Feature modules (e.g., pdf, auth)
+ ├── services/         → Cross-feature services
+ ├── models/           → Interfaces & types
+ ├── environments/     → Env configs
+ └── app.module.ts
 
-- Select appropriate data structures for your use case:
-  - Arrays for ordered collections
-  - Objects/Maps for key-value pairs
-  - Sets for unique values
-  - Linked lists for frequent insertions/deletions
-- Consider memory usage when choosing data structures
 
-### Memory Management
+Keep feature code modular with lazy-loaded routes.
 
-- Avoid memory leaks by properly cleaning up resources
-- Use efficient data types (e.g., use `uint8` instead of `int` when possible)
-- Minimize object creation in loops
-- Implement lazy loading for large resources
+📘 Code Style & Documentation
 
-### Profiling and Benchmarking
+Follow Angular’s Style Guide
 
-- Use profiling tools to identify bottlenecks
-- Benchmark different approaches before optimizing
-- Focus optimization efforts on the most impactful areas (80/20 rule)
-- Measure performance improvements quantitatively
+Write self-explanatory code
 
-### Best Practices
+Use JSDoc/TSDoc for services, models, and public APIs
 
-- Cache expensive operations when appropriate
-- Use asynchronous programming for I/O operations
-- Minimize DOM manipulations in web applications
-- Optimize database queries and use indexing
+Comment why, not what
 
-## 3. General Best Practices for Better Code
+Keep code formatted using Prettier ("parser": "angular" for HTML)
 
-These practices apply broadly to improve overall code quality:
+🚫 Code Quality
 
-### Testing
+Remove unused imports, services, and variables
 
-- Write unit tests for all public functions
-- Include integration tests for component interactions
-- Use test-driven development (TDD) when possible
-- Aim for high test coverage (target 80%+)
-- Write tests that are fast, reliable, and maintainable
+Avoid logic duplication — refactor common code into services
 
-### Version Control
+Follow DRY and SOLID principles
 
-- Commit frequently with descriptive messages
-- Use branches for feature development
-- Follow semantic versioning for releases
-- Never commit sensitive information
+Use async pipes in templates instead of manual subscriptions
 
-### Code Reviews
+Prefer Angular reactive forms over template-driven for complex logic
 
-- Participate in code reviews regularly
-- Provide constructive feedback
-- Learn from review comments
-- Use automated tools for static analysis
+2️⃣ Angular Performance Optimization
+⚙️ Change Detection
 
-### Refactoring
+Use OnPush wherever possible
 
-- Regularly refactor code to improve structure
-- Identify and eliminate technical debt
-- Use automated refactoring tools when available
-- Refactor before adding new features
+Avoid mutating arrays/objects directly
 
-### Learning and Improvement
+Leverage trackBy in *ngFor loops to reduce re-rendering
 
-- Stay updated with language and framework changes
-- Read high-quality code from reputable sources
-- Participate in coding communities
-- Continuously improve your skills
+🧮 RxJS Optimization
 
-### Security
+Unsubscribe using takeUntil, async pipe, or Subscription cleanup
 
-- Validate all inputs to prevent injection attacks
-- Use secure coding practices (e.g., avoid hardcoded secrets)
-- Keep dependencies updated to patch vulnerabilities
-- Implement proper authentication and authorization
+Avoid unnecessary nested subscriptions — use switchMap, mergeMap
 
-### Error Handling
+Use Subjects for controlled event streams
 
-- Use appropriate error handling mechanisms
-- Provide meaningful error messages
-- Avoid exposing internal implementation details in errors
-- Log errors for debugging while protecting sensitive information
+Use debounceTime for search or resize events
 
-### Documentation
+💾 Lazy Loading
 
-- Maintain up-to-date README files
-- Document APIs and public interfaces
-- Create user guides for complex features
-- Use tools like Swagger for API documentation
+Lazy-load feature modules via loadChildren
 
-## Implementation Checklist
+Use standalone components for smaller, isolated features
 
-Before committing code, review this checklist:
+Implement route preloading strategies for faster navigation
 
-- [ ] Code follows naming conventions
-- [ ] Functions are small and single-purpose
-- [ ] No code duplication
-- [ ] Performance considerations addressed
-- [ ] Tests written and passing
-- [ ] Code reviewed (self or peer)
-- [ ] Documentation updated
-- [ ] No linting errors
-- [ ] Dependencies are necessary and up-to-date
+📦 Bundling & Assets
 
-## Tools and Resources
+Optimize images with ngx-image-compress
 
-### Recommended Tools
+Use Angular CLI’s production build with --configuration production
 
-- ESLint/TSLint for code quality
-- Prettier for code formatting
-- Jest/Mocha for testing
-- Webpack/Rollup for bundling
-- Chrome DevTools for performance profiling
+Keep dependencies minimal and updated
 
-### Learning Resources
+Use TailwindCSS purge to remove unused styles
 
-- "Clean Code" by Robert C. Martin
-- "The Pragmatic Programmer" by Hunt and Thomas
-- Online platforms: LeetCode, HackerRank for algorithm practice
-- Documentation for your specific language/framework
+3️⃣ Angular Best Practices for Maintainability
+🧪 Testing
 
-Remember that writing better code is an iterative process. Focus on continuous improvement and learning from each project.
+Use Jasmine + Karma (included) or Jest for faster tests
+
+Write unit tests for:
+
+Services → logic validation
+
+Components → UI behavior
+
+Pipes → transformation correctness
+
+Aim for 80%+ coverage
+
+Mock HTTP using HttpClientTestingModule
+
+🪄 Version Control & Workflow
+
+Use feature branches per module or enhancement
+
+Write meaningful commits:
+feat(pdf): add base64 conversion service
+
+Run ng lint && ng test before commits
+
+Use Git hooks (e.g., Husky) for pre-commit linting
+
+🧹 Refactoring & Maintenance
+
+Regularly refactor large components or services
+
+Move duplicated logic to shared utilities
+
+Identify and pay off technical debt early
+
+Use ESLint for static code analysis (ng lint)
+
+🧠 Continuous Learning
+
+Stay updated with Angular’s official changelogs
+
+Follow Angular.dev and Material design updates
+
+Review RxJS patterns and Capacitor integrations
+
+Read code from official Angular examples and repositories
+
+🔒 Security
+
+Always sanitize inputs (DomSanitizer for HTML)
+
+Never store secrets in frontend code
+
+Use environment variables for API URLs
+
+Validate form data and prevent XSS
+
+Use HTTP interceptors for token handling
+
+⚠️ Error Handling & Logging
+
+Handle async errors via .pipe(catchError())
+
+Use global error handler (ErrorHandler class)
+
+Display user-friendly messages
+
+Log errors to an external monitoring service (e.g., Sentry)
+
+📝 Documentation
+
+Maintain updated README.md and module READMEs
+
+Generate API docs using Compodoc or TSDoc
+
+Keep changelog in CHANGELOG.md
+
+Provide clear setup and build instructions
+
+✅ Angular Implementation Checklist
+Category	Check
+Naming follows Angular standards	☐
+Components are small and focused	☐
+No code duplication	☐
+OnPush and trackBy used properly	☐
+RxJS streams handled safely	☐
+Tests written and passing	☐
+Documentation updated	☐
+Lint & Prettier clean	☐
+Dependencies optimized	☐
+🧰 Recommended Angular Tools
+Purpose	Tool
+Linting	ESLint (@angular-eslint/schematics)
+Formatting	Prettier (configured for Angular templates)
+Testing	Jasmine + Karma or Jest
+Profiling	Chrome DevTools → Performance tab
+Docs	Compodoc
+Styling	TailwindCSS
+Performance	Angular DevTools extension
+📚 Suggested Learning
+
+📘 Angular Style Guide — angular.dev/styleguide
+
+📗 Clean Code — Robert C. Martin
+
+💡 RxJS Docs — learn observables and operators
+
+🧩 Angular Material & CDK — for UI/UX patterns
+
+⚡ Capacitor Plugins — for native device integrations
