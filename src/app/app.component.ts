@@ -52,7 +52,7 @@ export class App implements OnInit {
     this.isDark = this.theme.isDark();
     this.theme.applyClass(this.isDark);
     this.fetchVisitorCount();
-    // this.updateCounter();
+    this.updateCounter();
     this.setupResponsiveSidenav();
     this.trackRouteChanges();
     this.updateSEOBasedOnRoute();
