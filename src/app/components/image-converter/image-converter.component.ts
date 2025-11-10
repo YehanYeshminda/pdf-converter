@@ -158,22 +158,65 @@ export class ImageConverter implements OnDestroy, OnInit, OnChanges {
     const raw = (this.inputBase64 || '').trim();
     if (!raw) return;
 
-    let dataUrl = raw;
-    if (!/^data:/.test(raw)) {
-      const mime = this.guessMimeFromFilename(this.filenameForDownload) || 'image/png';
-      dataUrl = `data:${mime};base64,${raw.replace(/\s+/g, '')}`;
-    }
+    this.loading = true;
 
     try {
-      const res = await fetch(dataUrl);
-      if (!res.ok) throw new Error('Failed to decode image');
-      const blob = await res.blob();
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      let dataUrl = raw;
+      if (!/^data:/.test(raw)) {
+        const mime = this.guessMimeFromFilename(this.filenameForDownload) || 'image/png';
+        dataUrl = `data:${mime};base64,${raw.replace(/\s+/g, '')}`;
+      }
+
+      const blob = await this.convertDataUrlToBlob(dataUrl);
       this.setPreviewFromBlob(blob);
+      this.loading = false;
       this.showSnack('Image preview ready');
     } catch (err) {
       console.error('Invalid base64 input or decode failed', err);
+      this.loading = false;
       this.showSnack('Invalid base64 input');
     }
+  }
+
+  private async convertDataUrlToBlob(dataUrl: string): Promise<Blob> {
+    if (dataUrl.length < 1000000) { 
+      const res = await fetch(dataUrl);
+      if (!res.ok) throw new Error('Failed to decode image');
+      return await res.blob();
+    }
+
+    return new Promise((resolve, reject) => {
+      try {
+        const arr = dataUrl.split(',');
+        const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        
+        const chunkSize = 8192;
+        let offset = 0;
+
+        const processChunk = () => {
+          const end = Math.min(offset + chunkSize, n);
+          for (let i = offset; i < end; i++) {
+            u8arr[i] = bstr.charCodeAt(i);
+          }
+          offset = end;
+
+          if (offset < n) {
+            setTimeout(processChunk, 0);
+          } else {
+            resolve(new Blob([u8arr], { type: mime }));
+          }
+        };
+
+        processChunk();
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
   private setPreviewFromBlob(blob: Blob) {

@@ -1,5 +1,7 @@
 🧭 Angular Clean Code & Performance Guidelines
 
+You are a an expert Angular developer. Follow these comprehensive guidelines to ensure high-quality Angular applications.
+
 These instructions define how to write clean, performant, and maintainable Angular code — especially for projects built with Angular 19+, TypeScript 5+, RxJS 7+, TailwindCSS, and Capacitor.
 
 1️⃣ Clean Angular Code Principles

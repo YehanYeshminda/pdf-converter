@@ -31,70 +31,79 @@
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="side" opened class="sidenav">
         <mat-nav-list>
-            <h3 mat-subheader>Converters</h3>
-            <a mat-list-item routerLink="/pdf-converter" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>picture_as_pdf</mat-icon>
-                <span matListItemTitle>PDF Converter</span>
-            </a>
+            <!-- Converters Section -->
+            <div class="section-header" (click)="toggleSection('converters')">
+                <h3 mat-subheader>Converters</h3>
+                <mat-icon class="expand-icon">{{ convertersExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            <div class="section-content" [class.collapsed]="!convertersExpanded">
+                <a mat-list-item routerLink="/pdf-converter" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>picture_as_pdf</mat-icon>
+                    <span matListItemTitle>PDF Converter</span>
+                </a>
 
-            <a mat-list-item routerLink="/text-encoder-decoder" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>text_fields</mat-icon>
-                <span matListItemTitle>Text Encoder</span>
-            </a>
+                <a mat-list-item routerLink="/text-encoder-decoder" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>text_fields</mat-icon>
+                    <span matListItemTitle>Text Encoder</span>
+                </a>
 
-            <a mat-list-item routerLink="/json-to-typescript" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>data_object</mat-icon>
-                <span matListItemTitle>JSON to Code</span>
-            </a>
+                <a mat-list-item routerLink="/json-to-typescript" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>data_object</mat-icon>
+                    <span matListItemTitle>JSON to Code</span>
+                </a>
 
-            <a mat-list-item routerLink="/jwt-decoder" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>key</mat-icon>
-                <span matListItemTitle>JWT Decoder</span>
-            </a>
+                <a mat-list-item routerLink="/jwt-decoder" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>key</mat-icon>
+                    <span matListItemTitle>JWT Decoder</span>
+                </a>
 
-            <a mat-list-item routerLink="/regex-tester" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>search</mat-icon>
-                <span matListItemTitle>RegEx Tester</span>
-            </a>
+                <a mat-list-item routerLink="/regex-tester" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>search</mat-icon>
+                    <span matListItemTitle>RegEx Tester</span>
+                </a>
 
-            <a mat-list-item routerLink="/timestamp-converter" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>schedule</mat-icon>
-                <span matListItemTitle>Timestamp Converter</span>
-            </a>
-
-            <!-- <mat-divider></mat-divider>
-
-            <h3 mat-subheader>Productivity</h3>
-            <a mat-list-item routerLink="/todo-list" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>task_alt</mat-icon>
-                <span matListItemTitle>Todo List</span>
-            </a> -->
+                <a mat-list-item routerLink="/timestamp-converter" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>schedule</mat-icon>
+                    <span matListItemTitle>Timestamp Converter</span>
+                </a>
+            </div>
 
             <mat-divider></mat-divider>
 
-            <h3 mat-subheader>PDF Tools</h3>
-            <a mat-list-item routerLink="/pdf-editor" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>edit</mat-icon>
-                <span matListItemTitle>PDF Editor</span>
-            </a>
+            <!-- PDF Tools Section -->
+            <div class="section-header" (click)="toggleSection('pdfTools')">
+                <h3 mat-subheader>PDF Tools</h3>
+                <mat-icon class="expand-icon">{{ pdfToolsExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            <div class="section-content" [class.collapsed]="!pdfToolsExpanded">
+                <a mat-list-item routerLink="/pdf-editor" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>edit</mat-icon>
+                    <span matListItemTitle>PDF Editor</span>
+                </a>
 
-            <a mat-list-item routerLink="/pdf-splitter" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>content_cut</mat-icon>
-                <span matListItemTitle>PDF Splitter</span>
-            </a>
+                <a mat-list-item routerLink="/pdf-splitter" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>content_cut</mat-icon>
+                    <span matListItemTitle>PDF Splitter</span>
+                </a>
 
-            <a mat-list-item routerLink="/pdf-signature" routerLinkActive="active" (click)="onNavigate()">
-                <mat-icon matListItemIcon>draw</mat-icon>
-                <span matListItemTitle>PDF Signature</span>
-            </a>
+                <a mat-list-item routerLink="/pdf-signature" routerLinkActive="active" (click)="onNavigate()">
+                    <mat-icon matListItemIcon>draw</mat-icon>
+                    <span matListItemTitle>PDF Signature</span>
+                </a>
+            </div>
 
             <mat-divider></mat-divider>
 
-            <h3 mat-subheader>About</h3>
-            <a mat-list-item href="https://yehanyeshminda.netlify.app" target="_blank" rel="noopener">
-                <mat-icon matListItemIcon>info</mat-icon>
-                <span matListItemTitle>Help & Info</span>
-            </a>
+            <div class="section-header" (click)="toggleSection('about')">
+                <h3 mat-subheader>About</h3>
+                <mat-icon class="expand-icon">{{ aboutExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            <div class="section-content" [class.collapsed]="!aboutExpanded">
+                <a mat-list-item href="https://yehanyeshminda.netlify.app" target="_blank" rel="noopener">
+                    <mat-icon matListItemIcon>info</mat-icon>
+                    <span matListItemTitle>Help & Info</span>
+                </a>
+            </div>
         </mat-nav-list>
     </mat-sidenav>
 

@@ -23,15 +23,45 @@
     padding: 16px 0;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 
-    h3 {
-        margin-top: 16px;
-        padding: 0 16px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        opacity: 0.7;
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        user-select: none;
 
-        &:first-child {
-            margin-top: 0;
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            opacity: 0.7;
+            flex: 1;
+        }
+
+        .expand-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+            transition: transform 0.2s ease;
+        }
+    }
+
+    .section-content {
+        max-height: 1000px;
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+        opacity: 1;
+
+        &.collapsed {
+            max-height: 0;
+            opacity: 0;
         }
     }
 

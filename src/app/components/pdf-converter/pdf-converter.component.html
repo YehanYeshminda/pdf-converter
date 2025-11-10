@@ -57,19 +57,28 @@
             <div *ngIf="mode === 'b642pdf'" class="panel">
                 <mat-form-field class="input-field">
                     <mat-label>Paste base64 (data URL or raw)</mat-label>
-                    <textarea matInput rows="6" [(ngModel)]="inputBase64"></textarea>
+                    <textarea matInput rows="6" [(ngModel)]="inputBase64" [disabled]="loading"></textarea>
+                    <mat-hint *ngIf="inputBase64.length > 100000">Large base64 detected ({{ (inputBase64.length / 1024 / 1024).toFixed(2) }}MB)</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>Filename for download</mat-label>
-                    <input matInput [(ngModel)]="filenameForDownload" placeholder="converted.pdf" />
+                    <input matInput [(ngModel)]="filenameForDownload" placeholder="converted.pdf" [disabled]="loading" />
                 </mat-form-field>
 
                 <div class="actions">
-                    <button mat-flat-button color="primary" (click)="convertBase64ToPdf()" [disabled]="!inputBase64">Convert</button>
-                    <button mat-stroked-button color="accent" (click)="downloadPreviewPdf()" [disabled]="!previewUrl">Download</button>
-                    <button mat-stroked-button (click)="openPreviewInNewTab()" [disabled]="!previewUrl">Open Preview</button>
+                    <button mat-flat-button color="primary" (click)="convertBase64ToPdf()" [disabled]="!inputBase64 || loading">
+                        <mat-icon>autorenew</mat-icon>
+                        {{ loading ? 'Converting...' : 'Convert' }}
+                    </button>
+                    <button mat-stroked-button color="accent" (click)="downloadPreviewPdf()" [disabled]="!previewUrl || loading">
+                        <mat-icon>download</mat-icon>
+                        Download
+                    </button>
+                    <button mat-stroked-button (click)="openPreviewInNewTab()" [disabled]="!previewUrl || loading">Open Preview</button>
                 </div>
+
+                <mat-progress-bar *ngIf="loading" class="my-2" mode="indeterminate"></mat-progress-bar>
 
                 <div class="preview" *ngIf="previewUrl">
                     <div class="preview-toolbar">

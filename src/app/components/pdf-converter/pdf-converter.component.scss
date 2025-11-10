@@ -35,6 +35,19 @@
 .input-field {
     width: 100%;
     padding-top: 10px;
+
+    textarea {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        // Improve performance for large text
+        will-change: scroll-position;
+        contain: strict;
+    }
+}
+
+.my-2 {
+    margin: 12px 0;
 }
 
 @media (max-width: 600px) {

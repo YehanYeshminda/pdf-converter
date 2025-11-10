@@ -42,6 +42,10 @@ export class App implements OnInit {
   isDark = false;
   visitorCount: number = 0;
   currentRoute: string = '';
+  
+  convertersExpanded = true;
+  pdfToolsExpanded = false;
+  aboutExpanded = false;
 
   constructor(
     private theme: ThemeService,
@@ -110,6 +114,20 @@ export class App implements OnInit {
 
   toggleSidenav() {
     this.sidenav.toggle();
+  }
+
+  toggleSection(section: 'converters' | 'pdfTools' | 'about') {
+    switch (section) {
+      case 'converters':
+        this.convertersExpanded = !this.convertersExpanded;
+        break;
+      case 'pdfTools':
+        this.pdfToolsExpanded = !this.pdfToolsExpanded;
+        break;
+      case 'about':
+        this.aboutExpanded = !this.aboutExpanded;
+        break;
+    }
   }
 
   onNavigate() {

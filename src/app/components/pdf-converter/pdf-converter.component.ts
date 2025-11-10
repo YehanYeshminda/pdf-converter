@@ -150,23 +150,67 @@ export class PdfConverter implements OnInit, OnChanges {
     this.showSnack('Base64 downloaded');
   }
 
-  convertBase64ToPdf() {
+  async convertBase64ToPdf() {
     const raw = (this.inputBase64 || '').trim();
     if (!raw) return;
-    const b64 = raw.replace(/^data:.*;base64,/, '').replace(/\s+/g, '');
+
+    this.loading = true;
+
     try {
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      const b64 = raw.replace(/^data:.*;base64,/, '').replace(/\s+/g, '');
+      
+      const blob = await this.convertBase64ToBlob(b64);
+      this.setPreviewFromBlob(blob);
+      this.loading = false;
+      this.showSnack('Preview ready — open or download the PDF');
+    } catch (err) {
+      console.error('Invalid base64 input or decode failed', err);
+      this.loading = false;
+      this.showSnack('Invalid base64 input');
+    }
+  }
+
+  private async convertBase64ToBlob(b64: string): Promise<Blob> {
+    if (b64.length < 1000000) { 
       const binary = atob(b64);
       const len = binary.length;
       const bytes = new Uint8Array(len);
       for (let i = 0; i < len; i++) {
         bytes[i] = binary.charCodeAt(i);
       }
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      this.setPreviewFromBlob(blob);
-      this.showSnack('Preview ready — open or download the PDF');
-    } catch (err) {
-      this.showSnack('Invalid base64 input');
+      return new Blob([bytes], { type: 'application/pdf' });
     }
+
+    return new Promise((resolve, reject) => {
+      try {
+        const binary = atob(b64);
+        const len = binary.length;
+        const bytes = new Uint8Array(len);
+        
+        const chunkSize = 8192;
+        let offset = 0;
+
+        const processChunk = () => {
+          const end = Math.min(offset + chunkSize, len);
+          for (let i = offset; i < end; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          offset = end;
+
+          if (offset < len) {
+            setTimeout(processChunk, 0);
+          } else {
+            resolve(new Blob([bytes], { type: 'application/pdf' }));
+          }
+        };
+
+        processChunk();
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
   private setPreviewFromBlob(blob: Blob) {
